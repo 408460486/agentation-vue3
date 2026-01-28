@@ -1,0 +1,39 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  devtools: { enabled: true },
+
+  devServer: {
+    port: 3003,
+    host: '0.0.0.0',
+  },
+
+  // Exclude index.ts from component auto-scan to avoid naming conflicts
+  components: {
+    dirs: [
+      {
+        path: '~/components',
+        ignore: ['**/index.ts'],
+      },
+    ],
+  },
+
+  css: [
+    'agentation-vue3/dist/style.css',
+    '~/assets/globals.scss',
+  ],
+
+  // Client-side only for DOM manipulation
+  ssr: false,
+
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler',
+        },
+      },
+    },
+  },
+
+  compatibilityDate: '2026-01-26',
+})
