@@ -1,1 +1,2 @@
-/* /index.html 200
+# Cloudflare Workers static site - no redirects needed
+# Pre-rendered pages are served directly
