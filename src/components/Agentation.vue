@@ -38,6 +38,36 @@ import {
 // Module-level flag to prevent re-animating on SPA page navigation
 let hasPlayedEntranceAnimation = false
 
+// =============================================================================
+// Multi-select Constants | 多选常量
+// =============================================================================
+
+/** Drag threshold in pixels - must move this far to start drag selection */
+const DRAG_THRESHOLD = 8
+
+/** Throttle interval for element detection during drag (ms) */
+const DETECTION_THROTTLE = 50
+
+/** Minimum drag selection size to create annotation */
+const MIN_DRAG_SIZE = 20
+
+/** Text elements that should allow native text selection */
+const TEXT_ELEMENTS = new Set([
+  'P', 'SPAN', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+  'LI', 'TD', 'TH', 'LABEL', 'BLOCKQUOTE', 'FIGCAPTION',
+  'CAPTION', 'LEGEND', 'DT', 'DD', 'PRE', 'CODE',
+  'EM', 'STRONG', 'B', 'I', 'U', 'S', 'A',
+  'TIME', 'ADDRESS', 'CITE', 'Q', 'ABBR', 'DFN',
+  'MARK', 'SMALL', 'SUB', 'SUP',
+])
+
+/** Meaningful elements to detect during drag selection */
+const MEANINGFUL_ELEMENTS = [
+  'BUTTON', 'A', 'INPUT', 'IMG',
+  'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+  'LI', 'LABEL', 'TD', 'TH',
+]
+
 // CSS Modules
 const $style = useCssModule()
 
@@ -98,6 +128,7 @@ type PendingAnnotation = {
   computedStyles?: string
   computedStylesObj?: Record<string, string>
   nearbyElements?: string
+  isMultiSelect?: boolean
 }
 
 // =============================================================================
@@ -169,6 +200,31 @@ const isDraggingToolbar = ref(false)
 const dragStartPos = ref<{ x: number; y: number; toolbarX: number; toolbarY: number } | null>(null)
 const dragRotation = ref(0)
 let justFinishedToolbarDrag = false
+
+// =============================================================================
+// Multi-select State | 多选状态
+// =============================================================================
+
+/** Whether currently dragging to select elements */
+const isDraggingSelection = ref(false)
+
+/** Mouse position when drag started */
+const dragSelectionStart = ref<{ x: number; y: number } | null>(null)
+
+/** Current mouse position during drag */
+const dragSelectionEnd = ref<{ x: number; y: number } | null>(null)
+
+/** Elements currently highlighted during drag */
+const dragSelectedElements = ref<Array<{ element: HTMLElement; rect: DOMRect }>>([])
+
+/** Whether the initial mousedown was on a text element */
+let isTextElementDrag = false
+
+/** Timestamp of last element detection (for throttling) */
+let lastDetectionTime = 0
+
+/** Ref for mousedown position to avoid React state issues */
+const mouseDownPosRef = ref<{ x: number; y: number } | null>(null)
 
 // Refs
 const popupRef = ref<InstanceType<typeof AnnotationPopup> | null>(null)
@@ -270,6 +326,132 @@ function hexToRgba(hex: string, alpha: number): string {
   const g = parseInt(hex.slice(3, 5), 16)
   const b = parseInt(hex.slice(5, 7), 16)
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+// =============================================================================
+// Multi-select Utils | 多选工具函数
+// =============================================================================
+
+/** Get selection rectangle from start and end points */
+function getSelectionRect(start: { x: number; y: number }, end: { x: number; y: number }) {
+  return {
+    left: Math.min(start.x, end.x),
+    top: Math.min(start.y, end.y),
+    right: Math.max(start.x, end.x),
+    bottom: Math.max(start.y, end.y),
+    width: Math.abs(end.x - start.x),
+    height: Math.abs(end.y - start.y),
+  }
+}
+
+/** Check if element rect intersects with selection rect */
+function rectsIntersect(
+  elemRect: DOMRect,
+  selRect: { left: number; top: number; right: number; bottom: number }
+): boolean {
+  return !(
+    elemRect.right < selRect.left ||
+    elemRect.left > selRect.right ||
+    elemRect.bottom < selRect.top ||
+    elemRect.top > selRect.bottom
+  )
+}
+
+/** Check if element is too large (container-like) */
+function isElementTooLarge(rect: DOMRect): boolean {
+  const viewportWidth = window.innerWidth
+  const viewportHeight = window.innerHeight
+  return rect.width > viewportWidth * 0.8 && rect.height > viewportHeight * 0.5
+}
+
+/** Filter out nested elements - keep only outermost */
+function filterNestedElements(elements: HTMLElement[]): HTMLElement[] {
+  return elements.filter(el => {
+    return !elements.some(other => other !== el && other.contains(el))
+  })
+}
+
+/** Detect elements within selection rectangle */
+function detectElementsInSelection(
+  selRect: { left: number; top: number; right: number; bottom: number; width: number; height: number }
+): Array<{ element: HTMLElement; rect: DOMRect }> {
+  const results: Array<{ element: HTMLElement; rect: DOMRect }> = []
+
+  // Query all meaningful elements
+  const selector = MEANINGFUL_ELEMENTS.map(tag => tag.toLowerCase()).join(',')
+  const allElements = document.querySelectorAll<HTMLElement>(selector)
+
+  allElements.forEach(element => {
+    // Skip toolbar/popup elements
+    if (
+      element.closest('[data-feedback-toolbar]') ||
+      element.closest('[data-annotation-popup]') ||
+      element.closest('[data-annotation-marker]')
+    ) {
+      return
+    }
+
+    const rect = element.getBoundingClientRect()
+
+    // Skip invisible elements
+    if (rect.width === 0 || rect.height === 0) return
+
+    const style = window.getComputedStyle(element)
+    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+      return
+    }
+
+    // Skip too large elements
+    if (isElementTooLarge(rect)) return
+
+    // Check intersection
+    if (rectsIntersect(rect, selRect)) {
+      results.push({ element, rect })
+    }
+  })
+
+  // Filter nested elements
+  const filtered = filterNestedElements(results.map(r => r.element))
+  return results.filter(r => filtered.includes(r.element))
+}
+
+/** Generate element description for multi-select annotation */
+function generateMultiSelectDescription(elements: HTMLElement[]): string {
+  if (elements.length === 0) return 'Empty area'
+  if (elements.length === 1) {
+    const { name } = identifyElement(elements[0])
+    return name
+  }
+
+  // Count element types
+  const typeCounts: Record<string, number> = {}
+  elements.forEach(el => {
+    const tag = el.tagName.toLowerCase()
+    typeCounts[tag] = (typeCounts[tag] || 0) + 1
+  })
+
+  const parts = Object.entries(typeCounts).map(([tag, count]) => {
+    return count > 1 ? `${count} ${tag}s` : tag
+  })
+
+  return `${elements.length} elements: ${parts.join(', ')}`
+}
+
+/** Calculate bounding box for multiple elements */
+function calculateBoundingBox(rects: DOMRect[]): { x: number; y: number; width: number; height: number } {
+  if (rects.length === 0) return { x: 0, y: 0, width: 0, height: 0 }
+
+  const left = Math.min(...rects.map(r => r.left))
+  const top = Math.min(...rects.map(r => r.top))
+  const right = Math.max(...rects.map(r => r.right))
+  const bottom = Math.max(...rects.map(r => r.bottom))
+
+  return {
+    x: left,
+    y: top + window.scrollY,
+    width: right - left,
+    height: bottom - top,
+  }
 }
 
 // Helper function to calculate viewport-aware tooltip positioning for markers
@@ -617,6 +799,7 @@ const handlePopupSubmit = (text: string) => {
     accessibility: pendingAnnotation.value.accessibility,
     computedStyles: pendingAnnotation.value.computedStyles,
     nearbyElements: pendingAnnotation.value.nearbyElements,
+    isMultiSelect: pendingAnnotation.value.isMultiSelect,
   }
 
   annotations.value = [...annotations.value, newAnnotation]
@@ -660,6 +843,147 @@ const handleMarkerDelete = (annotation: Annotation, e: MouseEvent) => {
 // =============================================================================
 // Event Handlers
 // =============================================================================
+
+// =============================================================================
+// Multi-select Event Handlers | 多选事件处理
+// =============================================================================
+
+const handleSelectionMouseDown = (e: MouseEvent) => {
+  if (!isActive.value) return
+  if (e.button !== 0) return // Only left click
+
+  const target = e.target as HTMLElement
+
+  // Skip if clicking on toolbar/popup/marker
+  if (
+    target.closest('[data-feedback-toolbar]') ||
+    target.closest('[data-annotation-popup]') ||
+    target.closest('[data-annotation-marker]')
+  ) {
+    return
+  }
+
+  // Skip if there's a pending annotation
+  if (pendingAnnotation.value || editingAnnotation.value) return
+
+  // Check if clicking on text element - allow native text selection
+  const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement
+  if (elementUnder && TEXT_ELEMENTS.has(elementUnder.tagName)) {
+    isTextElementDrag = true
+    return
+  }
+
+  isTextElementDrag = false
+  mouseDownPosRef.value = { x: e.clientX, y: e.clientY }
+  dragSelectionStart.value = { x: e.clientX, y: e.clientY }
+  dragSelectionEnd.value = { x: e.clientX, y: e.clientY }
+}
+
+const handleSelectionMouseMove = (e: MouseEvent) => {
+  if (!isActive.value) return
+  if (!mouseDownPosRef.value) return
+  if (isTextElementDrag) return
+
+  const dx = e.clientX - mouseDownPosRef.value.x
+  const dy = e.clientY - mouseDownPosRef.value.y
+  const distanceSquared = dx * dx + dy * dy
+
+  // Check if passed drag threshold
+  if (distanceSquared >= DRAG_THRESHOLD * DRAG_THRESHOLD) {
+    if (!isDraggingSelection.value) {
+      isDraggingSelection.value = true
+      // Clear hover state when starting drag
+      hoverInfo.value = null
+    }
+
+    dragSelectionEnd.value = { x: e.clientX, y: e.clientY }
+
+    // Throttled element detection
+    const now = Date.now()
+    if (now - lastDetectionTime >= DETECTION_THROTTLE) {
+      lastDetectionTime = now
+      const selRect = getSelectionRect(dragSelectionStart.value!, dragSelectionEnd.value!)
+      dragSelectedElements.value = detectElementsInSelection(selRect)
+    }
+  }
+}
+
+const handleSelectionMouseUp = (e: MouseEvent) => {
+  if (!isActive.value) return
+
+  const wasDragging = isDraggingSelection.value
+
+  // Reset drag state
+  mouseDownPosRef.value = null
+  isTextElementDrag = false
+
+  if (!wasDragging) {
+    // Not a drag - let handleClick handle it
+    isDraggingSelection.value = false
+    dragSelectionStart.value = null
+    dragSelectionEnd.value = null
+    dragSelectedElements.value = []
+    return
+  }
+
+  // Complete the drag selection
+  const start = dragSelectionStart.value
+  const end = { x: e.clientX, y: e.clientY }
+
+  if (start) {
+    const selRect = getSelectionRect(start, end)
+
+    // Check minimum size
+    if (selRect.width >= MIN_DRAG_SIZE && selRect.height >= MIN_DRAG_SIZE) {
+      // Final precise detection
+      const finalElements = detectElementsInSelection(selRect)
+      const elements = finalElements.map(f => f.element)
+      const rects = finalElements.map(f => f.rect)
+
+      // Calculate center position for annotation
+      let annotationX: number
+      let annotationY: number
+      let boundingBox: { x: number; y: number; width: number; height: number }
+
+      if (elements.length > 0) {
+        boundingBox = calculateBoundingBox(rects)
+        annotationX = (boundingBox.x + boundingBox.width / 2) / window.innerWidth * 100
+        annotationY = boundingBox.y + boundingBox.height / 2
+      } else {
+        // Empty area selection
+        boundingBox = {
+          x: selRect.left,
+          y: selRect.top + window.scrollY,
+          width: selRect.width,
+          height: selRect.height,
+        }
+        annotationX = (selRect.left + selRect.width / 2) / window.innerWidth * 100
+        annotationY = selRect.top + window.scrollY + selRect.height / 2
+      }
+
+      const description = generateMultiSelectDescription(elements)
+      const elementPaths = elements.map(el => identifyElement(el).path).join('; ')
+
+      // Create pending annotation for multi-select
+      pendingAnnotation.value = {
+        x: annotationX,
+        y: annotationY,
+        clientY: e.clientY,
+        element: description,
+        elementPath: elementPaths || 'Area selection',
+        boundingBox,
+        isFixed: false,
+        isMultiSelect: true,
+      }
+    }
+  }
+
+  // Reset all drag state
+  isDraggingSelection.value = false
+  dragSelectionStart.value = null
+  dragSelectionEnd.value = null
+  dragSelectedElements.value = []
+}
 
 const handleMouseMove = (e: MouseEvent) => {
   if (!isActive.value || pendingAnnotation.value || editingAnnotation.value) return
@@ -807,6 +1131,11 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('resize', constrainToolbarPosition)
 
+  // Multi-select event listeners
+  document.addEventListener('mousedown', handleSelectionMouseDown, true)
+  document.addEventListener('mousemove', handleSelectionMouseMove)
+  document.addEventListener('mouseup', handleSelectionMouseUp)
+
   // Add cursor styles when active
   const style = document.createElement('style')
   style.id = 'feedback-cursor-styles'
@@ -819,6 +1148,11 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', constrainToolbarPosition)
+
+  // Remove multi-select event listeners
+  document.removeEventListener('mousedown', handleSelectionMouseDown, true)
+  document.removeEventListener('mousemove', handleSelectionMouseMove)
+  document.removeEventListener('mouseup', handleSelectionMouseUp)
 
   const style = document.getElementById('feedback-cursor-styles')
   if (style) style.remove()
@@ -1120,6 +1454,35 @@ watch(dragStartPos, (newVal, oldVal) => {
     </div>
   </div>
 
+    <!-- Drag selection rectangle -->
+    <div
+      v-if="isDraggingSelection && dragSelectionStart && dragSelectionEnd"
+      :class="$style.dragSelection"
+      :style="{
+        left: `${Math.min(dragSelectionStart.x, dragSelectionEnd.x)}px`,
+        top: `${Math.min(dragSelectionStart.y, dragSelectionEnd.y)}px`,
+        width: `${Math.abs(dragSelectionEnd.x - dragSelectionStart.x)}px`,
+        height: `${Math.abs(dragSelectionEnd.y - dragSelectionStart.y)}px`,
+      }"
+    >
+      <span v-if="dragSelectedElements.length > 0" :class="$style.dragCount">
+        {{ dragSelectedElements.length }}
+      </span>
+    </div>
+
+    <!-- Selected elements highlight during drag -->
+    <div
+      v-for="(item, index) in dragSelectedElements"
+      :key="`drag-highlight-${index}`"
+      :class="$style.selectedElementHighlight"
+      :style="{
+        left: `${item.rect.left}px`,
+        top: `${item.rect.top}px`,
+        width: `${item.rect.width}px`,
+        height: `${item.rect.height}px`,
+      }"
+    />
+
     <!-- Hover highlight -->
     <div
       v-if="isActive && hoverInfo && hoverInfo.rect && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId"
@@ -1154,13 +1517,14 @@ watch(dragStartPos, (newVal, oldVal) => {
         :class="[
           $style.marker,
           !isDarkMode && $style.light,
-          hoveredMarkerId === annotation.id && $style.hovered
+          hoveredMarkerId === annotation.id && $style.hovered,
+          annotation.isMultiSelect && $style.multiSelect
         ]"
         :style="{
           left: `${annotation.x}%`,
           top: annotation.isFixed ? `${annotation.y}px` : `${annotation.y - scrollY}px`,
           position: 'fixed',
-          backgroundColor: hoveredMarkerId === annotation.id ? undefined : props.accentColor,
+          backgroundColor: hoveredMarkerId === annotation.id ? undefined : (annotation.isMultiSelect ? '#10b981' : props.accentColor),
         }"
         data-annotation-marker
         @mouseenter="hoveredMarkerId = annotation.id"
@@ -1256,6 +1620,57 @@ watch(dragStartPos, (newVal, oldVal) => {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+// =============================================================================
+// Multi-select Styles | 多选样式
+// =============================================================================
+
+$green: #10b981;
+
+.dragSelection {
+  position: fixed;
+  border: 2px solid rgba($green, 0.6);
+  border-radius: 4px;
+  background: rgba($green, 0.08);
+  pointer-events: none;
+  z-index: 99997;
+  will-change: transform, width, height;
+  contain: layout style;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dragCount {
+  background: $green;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.selectedElementHighlight {
+  position: fixed;
+  border: 2px solid rgba($green, 0.5);
+  border-radius: 4px;
+  background: rgba($green, 0.06);
+  pointer-events: none;
+  z-index: 99996;
+  will-change: transform, width, height;
+  contain: layout style;
+}
+
+.multiSelect {
+  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  margin-left: -13px;
+  margin-top: -13px;
+  font-size: 0.75rem;
 }
 
 // =============================================================================
