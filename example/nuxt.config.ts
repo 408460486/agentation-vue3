@@ -36,6 +36,13 @@ export default defineNuxtConfig({
   ssr: false,
 
   vite: {
+    // Local development: use source code directly for HMR
+    // 本地开发：直接使用源码以支持热更新
+    resolve: {
+      alias: process.dev
+        ? { 'agentation-vue3': '../src/index.ts' }
+        : {},
+    },
     css: {
       preprocessorOptions: {
         scss: {
