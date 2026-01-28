@@ -16,6 +16,7 @@ Agentation 是一个与 AI 工具无关的 Vue 3 可视化反馈工具。点击�
 
 ```bash
 npm install agentation-vue3 -D
+pnpm add agentation-vue3 -D
 ```
 
 ### 使用方法
