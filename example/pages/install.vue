@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from '~/composables/useI18n'
 
+const { t } = useI18n()
 const copiedStates = ref<Record<string, boolean>>({})
 
 const copyToClipboard = async (text: string, key: string) => {
@@ -16,12 +18,12 @@ const copyToClipboard = async (text: string, key: string) => {
   <div>
     <article class="article">
       <header>
-        <h1>Installation</h1>
-        <p class="tagline">Get started with Agentation in your project</p>
+        <h1>{{ t('install.title') }}</h1>
+        <p class="tagline">{{ t('install.tagline') }}</p>
       </header>
 
       <section>
-        <h2>Install the package</h2>
+        <h2>{{ t('install.installPackage') }}</h2>
         <div style="position: relative">
           <pre class="code-block">npm install agentation-vue3</pre>
           <button
@@ -55,16 +57,14 @@ const copyToClipboard = async (text: string, key: string) => {
           </button>
         </div>
         <p style="font-size: 0.875rem; color: rgba(0,0,0,0.5); margin-top: 0.5rem">
-          Or use yarn, pnpm, or bun.
+          {{ t('install.orUse') }}
         </p>
       </section>
 
       <section>
-        <h2>Add to your app</h2>
+        <h2>{{ t('install.addToApp') }}</h2>
         <p>
-          Add the component anywhere in your Vue app, ideally at the root
-          level. The <code>import.meta.env.DEV</code> check ensures it only loads in
-          development.
+          {{ t('install.addToAppDesc') }}<code>import.meta.env.DEV</code> {{ t('install.addToAppDesc2') }}
         </p>
         <pre class="code-block">&lt;script setup lang="ts"&gt;
 import { Agentation } from "agentation-vue3";
@@ -77,9 +77,9 @@ import { Agentation } from "agentation-vue3";
       </section>
 
       <section>
-        <h2>Nuxt 3</h2>
+        <h2>{{ t('install.nuxt3') }}</h2>
         <p>
-          For Nuxt 3, add the component to your <code>app.vue</code> or layout:
+          {{ t('install.nuxt3Desc') }}<code>app.vue</code> {{ t('install.nuxt3Desc2') }}
         </p>
         <pre class="code-block">&lt;script setup lang="ts"&gt;
 import { Agentation } from "agentation-vue3";
@@ -92,7 +92,7 @@ import { Agentation } from "agentation-vue3";
   &lt;Agentation /&gt;
 &lt;/template&gt;</pre>
         <p style="font-size: 0.875rem; color: rgba(0,0,0,0.5); margin-top: 0.5rem">
-          Don't forget to add the CSS in your <code>nuxt.config.ts</code>:
+          {{ t('install.nuxt3Css') }}<code>nuxt.config.ts</code>:
         </p>
         <pre class="code-block">export default defineNuxtConfig({
   css: ['agentation-vue3/dist/style.css'],
@@ -101,20 +101,19 @@ import { Agentation } from "agentation-vue3";
       </section>
 
       <section>
-        <h2>Requirements</h2>
+        <h2>{{ t('install.requirements') }}</h2>
         <ul>
-          <li><strong>Vue 3.3+</strong> — Uses modern Vue features</li>
-          <li><strong>Client-side only</strong> — Requires DOM access</li>
-          <li><strong>Desktop only</strong> — Not optimized for mobile devices</li>
-          <li><strong>Zero dependencies</strong> — No runtime deps beyond Vue</li>
+          <li><strong>{{ t('install.reqVue') }}</strong> {{ t('install.reqVueDesc') }}</li>
+          <li><strong>{{ t('install.reqClient') }}</strong> {{ t('install.reqClientDesc') }}</li>
+          <li><strong>{{ t('install.reqDesktop') }}</strong> {{ t('install.reqDesktopDesc') }}</li>
+          <li><strong>{{ t('install.reqZero') }}</strong> {{ t('install.reqZeroDesc') }}</li>
         </ul>
       </section>
 
       <section>
-        <h2>Props</h2>
+        <h2>{{ t('install.props') }}</h2>
         <p>
-          The <code>Agentation</code> component accepts optional props for
-          programmatic integration:
+          {{ t('install.propsDesc') }}<code>Agentation</code> {{ t('install.propsDesc2') }}
         </p>
         <table style="width: 100%; border-collapse: collapse; margin-top: 1rem">
           <thead>
@@ -128,22 +127,21 @@ import { Agentation } from "agentation-vue3";
             <tr style="border-bottom: 1px solid rgba(0,0,0,0.05)">
               <td style="padding: 0.5rem 1rem 0.5rem 0"><code>@annotation-add</code></td>
               <td style="padding: 0.5rem 1rem 0.5rem 0"><code>(annotation: Annotation) =&gt; void</code></td>
-              <td style="padding: 0.5rem 0">Event fired when an annotation is added</td>
+              <td style="padding: 0.5rem 0">{{ t('install.propEvent') }}</td>
             </tr>
             <tr>
               <td style="padding: 0.5rem 1rem 0.5rem 0"><code>copy-to-clipboard</code></td>
               <td style="padding: 0.5rem 1rem 0.5rem 0"><code>boolean</code></td>
-              <td style="padding: 0.5rem 0">Whether to copy to clipboard (default: <code>true</code>)</td>
+              <td style="padding: 0.5rem 0">{{ t('install.propCopyDesc') }}<code>true</code>)</td>
             </tr>
           </tbody>
         </table>
       </section>
 
       <section>
-        <h2>Programmatic integration</h2>
+        <h2>{{ t('install.programmatic') }}</h2>
         <p>
-          Use the <code>@annotation-add</code> event to receive structured
-          annotation data directly. See the <NuxtLink to="/api">API page</NuxtLink> for all available events.
+          {{ t('install.programmaticDesc') }}<code>@annotation-add</code> {{ t('install.programmaticDesc2') }}<NuxtLink to="/api">API</NuxtLink>{{ t('install.programmaticDesc3') }}
         </p>
         <pre class="code-block">&lt;script setup lang="ts"&gt;
 import { Agentation, type Annotation } from "agentation-vue3";
@@ -169,16 +167,14 @@ const handleAnnotation = (annotation: Annotation) =&gt; {
       </section>
 
       <section>
-        <h2>Security notes</h2>
+        <h2>{{ t('install.security') }}</h2>
         <p>
-          Agentation runs in your browser and reads DOM content to generate
-          feedback. It does <strong>not</strong> send data anywhere —
-          everything stays local until you manually copy and paste.
+          {{ t('install.securityDesc') }}<strong>{{ t('install.securityNot') }}</strong>{{ t('install.securityDesc2') }}
         </p>
         <ul>
-          <li><strong>No network requests</strong> — all processing is client-side</li>
-          <li><strong>No data collection</strong> — nothing is tracked or stored remotely</li>
-          <li><strong>Dev-only</strong> — use the <code>import.meta.env.DEV</code> check to exclude from production</li>
+          <li><strong>{{ t('install.secNoNetwork') }}</strong> {{ t('install.secNoNetworkDesc') }}</li>
+          <li><strong>{{ t('install.secNoData') }}</strong> {{ t('install.secNoDataDesc') }}</li>
+          <li><strong>{{ t('install.secDevOnly') }}</strong> {{ t('install.secDevOnlyDesc') }}<code>import.meta.env.DEV</code> {{ t('install.secDevOnlyDesc2') }}</li>
         </ul>
       </section>
     </article>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import CodeBlock from '~/components/CodeBlock.vue'
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
 
 const basicUsageCode = `<script setup lang="ts">
 import { Agentation, type Annotation } from "agentation-vue3";
@@ -47,62 +50,60 @@ const typescriptCode = `import type { Annotation, AgentationProps } from "agenta
   <div>
     <article class="article">
       <header>
-        <h1>API</h1>
-        <p class="tagline">Programmatic access for developers</p>
+        <h1>{{ t('api.title') }}</h1>
+        <p class="tagline">{{ t('api.tagline') }}</p>
       </header>
 
       <section>
-        <h2>Overview</h2>
+        <h2>{{ t('api.overview') }}</h2>
         <p>
-          Agentation exposes callbacks that let you integrate annotations into
-          your own workflows — send to a backend, pipe to terminal, trigger
-          automations, or build custom AI integrations.
+          {{ t('api.overviewDesc') }}
         </p>
         <ul>
-          <li>Sync annotations to a database or backend service</li>
-          <li>Build analytics dashboards tracking feedback patterns</li>
-          <li>Create custom AI integrations (MCP servers, agent tools)</li>
-          <li>Trigger webhooks or Slack notifications on new feedback</li>
+          <li>{{ t('api.overviewItem1') }}</li>
+          <li>{{ t('api.overviewItem2') }}</li>
+          <li>{{ t('api.overviewItem3') }}</li>
+          <li>{{ t('api.overviewItem4') }}</li>
         </ul>
       </section>
 
       <section>
-        <h2>Props &amp; Events</h2>
+        <h2>{{ t('api.propsEvents') }}</h2>
         <div class="props-list">
           <div class="prop-item">
             <div class="prop-header">
               <code class="prop-name">@annotation-add</code>
               <span class="prop-type">(annotation: Annotation) =&gt; void</span>
             </div>
-            <p class="prop-desc">Called when an annotation is created</p>
+            <p class="prop-desc">{{ t('api.annotationAddDesc') }}</p>
           </div>
           <div class="prop-item">
             <div class="prop-header">
               <code class="prop-name">@annotation-delete</code>
               <span class="prop-type">(annotation: Annotation) =&gt; void</span>
             </div>
-            <p class="prop-desc">Called when an annotation is deleted</p>
+            <p class="prop-desc">{{ t('api.annotationDeleteDesc') }}</p>
           </div>
           <div class="prop-item">
             <div class="prop-header">
               <code class="prop-name">@annotation-update</code>
               <span class="prop-type">(annotation: Annotation) =&gt; void</span>
             </div>
-            <p class="prop-desc">Called when an annotation comment is edited</p>
+            <p class="prop-desc">{{ t('api.annotationUpdateDesc') }}</p>
           </div>
           <div class="prop-item">
             <div class="prop-header">
               <code class="prop-name">@annotations-clear</code>
               <span class="prop-type">(annotations: Annotation[]) =&gt; void</span>
             </div>
-            <p class="prop-desc">Called when all annotations are cleared</p>
+            <p class="prop-desc">{{ t('api.annotationsClearDesc') }}</p>
           </div>
           <div class="prop-item">
             <div class="prop-header">
               <code class="prop-name">@copy</code>
               <span class="prop-type">(markdown: string) =&gt; void</span>
             </div>
-            <p class="prop-desc">Callback with the markdown output when copy is clicked</p>
+            <p class="prop-desc">{{ t('api.copyDesc') }}</p>
           </div>
           <div class="prop-item">
             <div class="prop-header">
@@ -110,31 +111,31 @@ const typescriptCode = `import type { Annotation, AgentationProps } from "agenta
               <span class="prop-type">boolean</span>
               <span class="prop-default">default: true</span>
             </div>
-            <p class="prop-desc">Set to false to prevent writing to clipboard (if handling via @copy)</p>
+            <p class="prop-desc">{{ t('api.copyToClipboardDesc') }}</p>
           </div>
         </div>
       </section>
 
       <section>
-        <h2>Basic usage</h2>
+        <h2>{{ t('api.basicUsage') }}</h2>
         <p>
-          Receive annotation data directly in your code:
+          {{ t('api.basicUsageDesc') }}
         </p>
         <CodeBlock :code="basicUsageCode" language="typescript" />
       </section>
 
       <section>
-        <h2>Annotation type</h2>
+        <h2>{{ t('api.annotationType') }}</h2>
         <p>
-          The <code>Annotation</code> object passed to callbacks:
+          {{ t('api.annotationTypeDesc') }}<code>Annotation</code> {{ t('api.annotationTypeDesc2') }}
         </p>
         <CodeBlock :code="annotationTypeCode" language="typescript" />
       </section>
 
       <section>
-        <h2>TypeScript</h2>
+        <h2>{{ t('api.typescript') }}</h2>
         <p>
-          Types are exported for full TypeScript support:
+          {{ t('api.typescriptDesc') }}
         </p>
         <CodeBlock :code="typescriptCode" language="typescript" />
       </section>

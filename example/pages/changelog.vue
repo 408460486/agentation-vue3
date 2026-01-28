@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
+
 type ChangeType = 'added' | 'fixed' | 'improved' | 'removed'
 
 interface Change {
@@ -18,6 +22,17 @@ const badgeLabels: Record<ChangeType, string> = {
   fixed: 'Fixed',
   improved: 'Improved',
   removed: 'Removed',
+}
+
+// Computed badge labels for i18n
+const getBadgeLabel = (type: ChangeType): string => {
+  const labels: Record<ChangeType, string> = {
+    added: t('changelog.added'),
+    fixed: t('changelog.fixed'),
+    improved: t('changelog.improved'),
+    removed: t('changelog.removed'),
+  }
+  return labels[type]
 }
 
 const releases: Release[] = [
@@ -83,8 +98,8 @@ const changeTypes: ChangeType[] = ['fixed', 'improved', 'added', 'removed']
   <div>
     <article class="article">
       <header>
-        <h1>Changelog</h1>
-        <p class="tagline">Release history</p>
+        <h1>{{ t('changelog.title') }}</h1>
+        <p class="tagline">{{ t('changelog.tagline') }}</p>
       </header>
 
       <section v-for="release in releases" :key="release.version">
@@ -108,7 +123,7 @@ const changeTypes: ChangeType[] = ['fixed', 'improved', 'added', 'removed']
           <template v-for="type in changeTypes" :key="type">
             <div v-if="release.changes!.filter(c => c.type === type).length > 0">
               <div style="font-size: 0.6875rem; font-weight: 500; color: rgba(0, 0, 0, 0.4); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem">
-                {{ badgeLabels[type] }}
+                {{ getBadgeLabel(type) }}
               </div>
               <ul>
                 <li v-for="(change, j) in release.changes!.filter(c => c.type === type)" :key="j">

@@ -2,6 +2,11 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  // GitHub Pages deployment
+  app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
+  },
+
   devServer: {
     port: 3003,
     host: '0.0.0.0',

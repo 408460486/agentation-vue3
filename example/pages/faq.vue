@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
 
 interface FAQItem {
   question: string
@@ -13,7 +16,7 @@ interface FAQCategory {
 
 const faqCategories: FAQCategory[] = [
   {
-    title: 'Basics',
+    title: 'faq.basics',
     items: [
       {
         question: 'What is Agentation?',
@@ -30,7 +33,7 @@ const faqCategories: FAQCategory[] = [
     ],
   },
   {
-    title: 'Usage',
+    title: 'faq.usage',
     items: [
       {
         question: 'How does element identification work?',
@@ -59,7 +62,7 @@ const faqCategories: FAQCategory[] = [
     ],
   },
   {
-    title: 'Output',
+    title: 'faq.outputSection',
     items: [
       {
         question: 'What output formats are available?',
@@ -76,7 +79,7 @@ const faqCategories: FAQCategory[] = [
     ],
   },
   {
-    title: 'Technical',
+    title: 'faq.technical',
     items: [
       {
         question: 'Is there a Vue dependency?',
@@ -121,12 +124,12 @@ const handleToggle = (key: string) => {
   <div>
     <article class="article">
       <header>
-        <h1>FAQ</h1>
-        <p class="tagline">Common questions about Agentation</p>
+        <h1>{{ t('faq.title') }}</h1>
+        <p class="tagline">{{ t('faq.tagline') }}</p>
       </header>
 
       <div v-for="(category, catIndex) in faqCategories" :key="catIndex" class="faq-category">
-        <h2>{{ category.title }}</h2>
+        <h2>{{ t(category.title) }}</h2>
         <div
           v-for="(faq, itemIndex) in category.items"
           :key="`${catIndex}-${itemIndex}`"

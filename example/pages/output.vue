@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
 
 type OutputFormat = 'compact' | 'standard' | 'detailed' | 'forensic'
 
@@ -142,14 +145,13 @@ watch(outputFormat, (newFormat) => {
   <div>
     <article class="article">
       <header>
-        <h1>Output</h1>
-        <p class="tagline">How Agentation structures feedback for AI agents</p>
+        <h1>{{ t('output.title') }}</h1>
+        <p class="tagline">{{ t('output.tagline') }}</p>
       </header>
 
       <section>
         <p>
-          When you copy, you get structured markdown that agents can parse and act on.
-          Four formats are available:
+          {{ t('output.intro') }}
         </p>
         <template v-if="outputFormat">
           <div class="format-toggle" style="margin-top: 0.75rem">
@@ -157,25 +159,25 @@ watch(outputFormat, (newFormat) => {
               :class="{ active: outputFormat === 'compact' }"
               @click="handleFormatChange('compact')"
             >
-              Compact
+              {{ t('output.compact') }}
             </button>
             <button
               :class="{ active: outputFormat === 'standard' }"
               @click="handleFormatChange('standard')"
             >
-              Standard
+              {{ t('output.standard') }}
             </button>
             <button
               :class="{ active: outputFormat === 'detailed' }"
               @click="handleFormatChange('detailed')"
             >
-              Detailed
+              {{ t('output.detailed') }}
             </button>
             <button
               :class="{ active: outputFormat === 'forensic' }"
               @click="handleFormatChange('forensic')"
             >
-              Forensic
+              {{ t('output.forensic') }}
             </button>
           </div>
           <pre class="code-block" :style="{ opacity: textOpacity, transition: 'opacity 0.15s ease-out' }">{{ displayedCode }}</pre>
@@ -183,39 +185,36 @@ watch(outputFormat, (newFormat) => {
       </section>
 
       <section>
-        <h2>When to use each format</h2>
+        <h2>{{ t('output.whenToUse') }}</h2>
         <ul>
-          <li><strong>Compact</strong> &mdash; Quick feedback with minimal context. Good for small fixes.</li>
-          <li><strong>Standard</strong> &mdash; Balanced detail for most use cases. Includes location and classes.</li>
-          <li><strong>Detailed</strong> &mdash; Full context with bounding boxes and nearby text. Good for complex issues.</li>
-          <li><strong>Forensic</strong> &mdash; Maximum detail including computed styles. For debugging layout/style issues.</li>
+          <li><strong>{{ t('output.compact') }}</strong> &mdash; {{ t('output.compactDesc') }}</li>
+          <li><strong>{{ t('output.standard') }}</strong> &mdash; {{ t('output.standardDesc') }}</li>
+          <li><strong>{{ t('output.detailed') }}</strong> &mdash; {{ t('output.detailedDesc') }}</li>
+          <li><strong>{{ t('output.forensic') }}</strong> &mdash; {{ t('output.forensicDesc') }}</li>
         </ul>
       </section>
 
       <section>
-        <h2>Why structured output?</h2>
+        <h2>{{ t('output.whyStructured') }}</h2>
         <p>
-          The output includes searchable selectors and class names that agents can <code>grep</code> for
-          in your codebase to find the exact component.
+          {{ t('output.whyStructuredDesc') }}<code>grep</code> {{ t('output.whyStructuredDesc2') }}
         </p>
         <p>
-          Without Agentation, you&rsquo;d have to describe the element (&ldquo;the blue button
-          in the sidebar&rdquo;) and hope the agent guesses right. With Agentation, you give it
-          <code>.sidebar &gt; .nav-actions &gt; button.primary</code> and it can search for that directly.
+          {{ t('output.whyStructuredDesc3') }}
+          <code>.sidebar &gt; .nav-actions &gt; button.primary</code> {{ t('output.whyStructuredDesc4') }}
         </p>
       </section>
 
       <section>
-        <h2>Customizing output</h2>
+        <h2>{{ t('output.customizing') }}</h2>
         <p>
-          The copied output is plain markdown. Feel free to edit it before pasting
-          into your agent:
+          {{ t('output.customizingDesc') }}
         </p>
         <ul>
-          <li><strong>Add context</strong> &mdash; prepend with &ldquo;I&rsquo;m working on the dashboard page...&rdquo;</li>
-          <li><strong>Prioritize</strong> &mdash; reorder annotations by importance</li>
-          <li><strong>Remove noise</strong> &mdash; delete annotations that aren&rsquo;t relevant</li>
-          <li><strong>Add instructions</strong> &mdash; append &ldquo;Fix these issues and run the tests&rdquo;</li>
+          <li><strong>{{ t('output.addContext') }}</strong> &mdash; {{ t('output.addContextDesc') }}</li>
+          <li><strong>{{ t('output.prioritize') }}</strong> &mdash; {{ t('output.prioritizeDesc') }}</li>
+          <li><strong>{{ t('output.removeNoise') }}</strong> &mdash; {{ t('output.removeNoiseDesc') }}</li>
+          <li><strong>{{ t('output.addInstructions') }}</strong> &mdash; {{ t('output.addInstructionsDesc') }}</li>
         </ul>
       </section>
     </article>

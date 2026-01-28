@@ -652,6 +652,7 @@ const handleMarkerClick = (annotation: Annotation, e: MouseEvent) => {
 
 const handleMarkerDelete = (annotation: Annotation, e: MouseEvent) => {
   e.stopPropagation()
+  hoveredMarkerId.value = null // 重置悬停状态，恢复选中效果
   annotations.value = annotations.value.filter(a => a.id !== annotation.id)
   emit('annotationDelete', annotation)
 }
@@ -1121,7 +1122,7 @@ watch(dragStartPos, (newVal, oldVal) => {
 
     <!-- Hover highlight -->
     <div
-      v-if="isActive && hoverInfo && hoverInfo.rect && !pendingAnnotation && !editingAnnotation"
+      v-if="isActive && hoverInfo && hoverInfo.rect && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId"
       :class="$style.hoverHighlight"
       :style="{
         left: `${hoverInfo.rect.left}px`,
@@ -1135,7 +1136,7 @@ watch(dragStartPos, (newVal, oldVal) => {
 
     <!-- Hover tooltip -->
     <div
-      v-if="isActive && hoverInfo && !pendingAnnotation && !editingAnnotation"
+      v-if="isActive && hoverInfo && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId"
       :class="[$style.hoverTooltip, !isDarkMode && $style.light]"
       :style="{
         left: `${hoverPosition.x}px`,
@@ -1164,7 +1165,8 @@ watch(dragStartPos, (newVal, oldVal) => {
         data-annotation-marker
         @mouseenter="hoveredMarkerId = annotation.id"
         @mouseleave="hoveredMarkerId = null"
-        @click="(e) => handleMarkerClick(annotation, e)"
+        @click="(e) => handleMarkerDelete(annotation, e)"
+        @contextmenu.prevent="(e) => handleMarkerClick(annotation, e)"
       >
         <span v-if="hoveredMarkerId !== annotation.id" :class="$style.markerNumber">{{ index + 1 }}</span>
         <component v-else :is="IconXmarkLarge" :size="12" />
