@@ -6,14 +6,16 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "deploy:cf": "nuxt generate && wrangler pages deploy dist"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "nuxt": "3.15.0",
-    "sass": "1.97.0"
+    "sass": "1.97.0",
+    "wrangler": "^3.0.0"
   },
   "dependencies": {
-    "agentation-vue3": "link:.."
+    "agentation-vue3": "1.0.0"
   }
 }

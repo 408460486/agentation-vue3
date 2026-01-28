@@ -2,7 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  // GitHub Pages deployment
+  // Cloudflare Pages deployment (static site generation)
+  // 部署到 Cloudflare Pages（静态站点生成）
+  nitro: {
+    preset: 'cloudflare-pages-static',
+  },
+
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
   },
