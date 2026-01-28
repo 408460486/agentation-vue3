@@ -868,12 +868,12 @@ const handleMarkerDelete = (annotation: Annotation, e: MouseEvent) => {
 // =============================================================================
 
 const handleSelectionMouseDown = (e: MouseEvent) => {
-  console.log('[Multi-select] mousedown triggered, isActive:', isActive.value)
+  // console.log('[Multi-select] mousedown triggered, isActive:', isActive.value)
   if (!isActive.value) return
   if (e.button !== 0) return // Only left click
 
   const target = e.target as HTMLElement
-  console.log('[Multi-select] target element:', target.tagName, target.className)
+  // console.log('[Multi-select] target element:', target.tagName, target.className)
 
   // Skip if clicking on toolbar/popup/marker
   if (
@@ -881,24 +881,24 @@ const handleSelectionMouseDown = (e: MouseEvent) => {
     target.closest('[data-annotation-popup]') ||
     target.closest('[data-annotation-marker]')
   ) {
-    console.log('[Multi-select] skipped - toolbar/popup/marker')
+    // console.log('[Multi-select] skipped - toolbar/popup/marker')
     return
   }
 
   // Skip if there's a pending annotation
   if (pendingAnnotation.value || editingAnnotation.value) {
-    console.log('[Multi-select] skipped - pending/editing annotation')
+    // console.log('[Multi-select] skipped - pending/editing annotation')
     return
   }
 
   // Check if clicking on text element or contenteditable - allow native text selection
   if (TEXT_ELEMENTS.has(target.tagName) || target.isContentEditable) {
-    console.log('[Multi-select] skipped - text element:', target.tagName)
+    // console.log('[Multi-select] skipped - text element:', target.tagName)
     isTextElementDrag = true
     return
   }
 
-  console.log('[Multi-select] mousedown accepted, recording position:', e.clientX, e.clientY)
+  // console.log('[Multi-select] mousedown accepted, recording position:', e.clientX, e.clientY)
   isTextElementDrag = false
   mouseDownPosRef.value = { x: e.clientX, y: e.clientY }
   dragSelectionStart.value = { x: e.clientX, y: e.clientY }
@@ -917,14 +917,14 @@ const handleSelectionMouseMove = (e: MouseEvent) => {
   // Check if passed drag threshold
   if (distanceSquared >= DRAG_THRESHOLD * DRAG_THRESHOLD) {
     if (!isDraggingSelection.value) {
-      console.log('[Multi-select] drag threshold passed, starting drag selection')
+      // console.log('[Multi-select] drag threshold passed, starting drag selection')
       isDraggingSelection.value = true
       // Clear hover state when starting drag
       hoverInfo.value = null
     }
 
     dragSelectionEnd.value = { x: e.clientX, y: e.clientY }
-    console.log('[Multi-select] drag update:', dragSelectionStart.value, '->', dragSelectionEnd.value)
+    // console.log('[Multi-select] drag update:', dragSelectionStart.value, '->', dragSelectionEnd.value)
 
     // Throttled element detection
     const now = Date.now()
@@ -932,7 +932,7 @@ const handleSelectionMouseMove = (e: MouseEvent) => {
       lastDetectionTime = now
       const selRect = getSelectionRect(dragSelectionStart.value!, dragSelectionEnd.value!)
       dragSelectedElements.value = detectElementsInSelection(selRect)
-      console.log('[Multi-select] detected elements:', dragSelectedElements.value.length)
+      // console.log('[Multi-select] detected elements:', dragSelectedElements.value.length)
     }
   }
 }
