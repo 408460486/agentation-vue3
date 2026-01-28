@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "deploy:cf": "nuxt generate && wrangler pages deploy dist"
+    "deploy:cf": "nuxt generate && node -e \"require('fs').writeFileSync('dist/_redirects', '# Static site\\n')\" && wrangler pages deploy dist"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
