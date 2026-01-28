@@ -28,7 +28,12 @@ jobs:
       - name: Update version from release tag
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          npm version $VERSION --no-git-tag-version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if [ "$VERSION" != "$CURRENT_VERSION" ]; then
+            npm version $VERSION --no-git-tag-version
+          else
+            echo "Version already matches: $VERSION"
+          fi
 
       - name: Build
         run: pnpm build
