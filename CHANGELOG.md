@@ -10,9 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] / 未发布
 
+## [1.0.1] - 2025-01-28
+
 ### Added / 新增
 - GitHub Actions workflow for automatic npm publishing on release / 添加 GitHub Actions 工作流，在发布 Release 时自动发布到 npm
 - CHANGELOG.md with bilingual support / 添加双语更新日志
+- Mouse drag multi-select functionality (1:1 React port) / 鼠标框选多选功能（1:1 复刻 React 版本）
 
 ### Improved / 优化
 - Multi-select drag selection with visual outline for pending/editing annotations / 多选框选功能增加待处理/编辑标注的视觉边框
