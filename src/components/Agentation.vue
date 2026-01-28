@@ -18,6 +18,7 @@ import {
   IconCheckSmallAnimated,
   IconSun,
   IconMoon,
+  IconPlus,
 } from './icons'
 import {
   identifyElement,
@@ -43,7 +44,7 @@ let hasPlayedEntranceAnimation = false
 // =============================================================================
 
 /** Drag threshold in pixels - must move this far to start drag selection */
-const DRAG_THRESHOLD = 8
+const DRAG_THRESHOLD = 5
 
 /** Throttle interval for element detection during drag (ms) */
 const DETECTION_THROTTLE = 50
@@ -225,6 +226,9 @@ let lastDetectionTime = 0
 
 /** Ref for mousedown position to avoid React state issues */
 const mouseDownPosRef = ref<{ x: number; y: number } | null>(null)
+
+/** Flag to prevent click handler from firing after drag selection */
+let justFinishedDragSelection = false
 
 // Refs
 const popupRef = ref<InstanceType<typeof AnnotationPopup> | null>(null)
@@ -849,10 +853,12 @@ const handleMarkerDelete = (annotation: Annotation, e: MouseEvent) => {
 // =============================================================================
 
 const handleSelectionMouseDown = (e: MouseEvent) => {
+  console.log('[Multi-select] mousedown triggered, isActive:', isActive.value)
   if (!isActive.value) return
   if (e.button !== 0) return // Only left click
 
   const target = e.target as HTMLElement
+  console.log('[Multi-select] target element:', target.tagName, target.className)
 
   // Skip if clicking on toolbar/popup/marker
   if (
@@ -860,19 +866,24 @@ const handleSelectionMouseDown = (e: MouseEvent) => {
     target.closest('[data-annotation-popup]') ||
     target.closest('[data-annotation-marker]')
   ) {
+    console.log('[Multi-select] skipped - toolbar/popup/marker')
     return
   }
 
   // Skip if there's a pending annotation
-  if (pendingAnnotation.value || editingAnnotation.value) return
+  if (pendingAnnotation.value || editingAnnotation.value) {
+    console.log('[Multi-select] skipped - pending/editing annotation')
+    return
+  }
 
-  // Check if clicking on text element - allow native text selection
-  const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement
-  if (elementUnder && TEXT_ELEMENTS.has(elementUnder.tagName)) {
+  // Check if clicking on text element or contenteditable - allow native text selection
+  if (TEXT_ELEMENTS.has(target.tagName) || target.isContentEditable) {
+    console.log('[Multi-select] skipped - text element:', target.tagName)
     isTextElementDrag = true
     return
   }
 
+  console.log('[Multi-select] mousedown accepted, recording position:', e.clientX, e.clientY)
   isTextElementDrag = false
   mouseDownPosRef.value = { x: e.clientX, y: e.clientY }
   dragSelectionStart.value = { x: e.clientX, y: e.clientY }
@@ -891,12 +902,14 @@ const handleSelectionMouseMove = (e: MouseEvent) => {
   // Check if passed drag threshold
   if (distanceSquared >= DRAG_THRESHOLD * DRAG_THRESHOLD) {
     if (!isDraggingSelection.value) {
+      console.log('[Multi-select] drag threshold passed, starting drag selection')
       isDraggingSelection.value = true
       // Clear hover state when starting drag
       hoverInfo.value = null
     }
 
     dragSelectionEnd.value = { x: e.clientX, y: e.clientY }
+    console.log('[Multi-select] drag update:', dragSelectionStart.value, '->', dragSelectionEnd.value)
 
     // Throttled element detection
     const now = Date.now()
@@ -904,6 +917,7 @@ const handleSelectionMouseMove = (e: MouseEvent) => {
       lastDetectionTime = now
       const selRect = getSelectionRect(dragSelectionStart.value!, dragSelectionEnd.value!)
       dragSelectedElements.value = detectElementsInSelection(selRect)
+      console.log('[Multi-select] detected elements:', dragSelectedElements.value.length)
     }
   }
 }
@@ -940,14 +954,12 @@ const handleSelectionMouseUp = (e: MouseEvent) => {
       const elements = finalElements.map(f => f.element)
       const rects = finalElements.map(f => f.rect)
 
-      // Calculate center position for annotation
-      let annotationX: number
+      // Calculate bounding box and Y position for annotation
       let annotationY: number
       let boundingBox: { x: number; y: number; width: number; height: number }
 
       if (elements.length > 0) {
         boundingBox = calculateBoundingBox(rects)
-        annotationX = (boundingBox.x + boundingBox.width / 2) / window.innerWidth * 100
         annotationY = boundingBox.y + boundingBox.height / 2
       } else {
         // Empty area selection
@@ -957,7 +969,6 @@ const handleSelectionMouseUp = (e: MouseEvent) => {
           width: selRect.width,
           height: selRect.height,
         }
-        annotationX = (selRect.left + selRect.width / 2) / window.innerWidth * 100
         annotationY = selRect.top + window.scrollY + selRect.height / 2
       }
 
@@ -965,10 +976,11 @@ const handleSelectionMouseUp = (e: MouseEvent) => {
       const elementPaths = elements.map(el => identifyElement(el).path).join('; ')
 
       // Create pending annotation for multi-select
+      // Use mouse position for marker/popup, not bounding box center
       pendingAnnotation.value = {
-        x: annotationX,
+        x: (e.clientX / window.innerWidth) * 100,  // Mouse X as percentage
         y: annotationY,
-        clientY: e.clientY,
+        clientY: e.clientY,  // Mouse Y for popup positioning
         element: description,
         elementPath: elementPaths || 'Area selection',
         boundingBox,
@@ -983,6 +995,14 @@ const handleSelectionMouseUp = (e: MouseEvent) => {
   dragSelectionStart.value = null
   dragSelectionEnd.value = null
   dragSelectedElements.value = []
+
+  // Prevent click handler from firing after drag selection
+  if (wasDragging) {
+    justFinishedDragSelection = true
+    setTimeout(() => {
+      justFinishedDragSelection = false
+    }, 50)
+  }
 }
 
 const handleMouseMove = (e: MouseEvent) => {
@@ -1012,6 +1032,9 @@ const handleClick = (e: MouseEvent) => {
 
   // Skip if we just finished dragging the toolbar
   if (justFinishedToolbarDrag) return
+
+  // Skip if we just finished drag selection
+  if (justFinishedDragSelection) return
 
   const target = e.target as HTMLElement
   if (target.closest('[data-feedback-toolbar]')) return
@@ -1131,8 +1154,8 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('resize', constrainToolbarPosition)
 
-  // Multi-select event listeners
-  document.addEventListener('mousedown', handleSelectionMouseDown, true)
+  // Multi-select event listeners (without capture phase like React)
+  document.addEventListener('mousedown', handleSelectionMouseDown)
   document.addEventListener('mousemove', handleSelectionMouseMove)
   document.addEventListener('mouseup', handleSelectionMouseUp)
 
@@ -1150,7 +1173,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', constrainToolbarPosition)
 
   // Remove multi-select event listeners
-  document.removeEventListener('mousedown', handleSelectionMouseDown, true)
+  document.removeEventListener('mousedown', handleSelectionMouseDown)
   document.removeEventListener('mousemove', handleSelectionMouseMove)
   document.removeEventListener('mouseup', handleSelectionMouseUp)
 
@@ -1485,7 +1508,7 @@ watch(dragStartPos, (newVal, oldVal) => {
 
     <!-- Hover highlight -->
     <div
-      v-if="isActive && hoverInfo && hoverInfo.rect && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId"
+      v-if="isActive && hoverInfo && hoverInfo.rect && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId && !isDraggingSelection"
       :class="$style.hoverHighlight"
       :style="{
         left: `${hoverInfo.rect.left}px`,
@@ -1499,7 +1522,7 @@ watch(dragStartPos, (newVal, oldVal) => {
 
     <!-- Hover tooltip -->
     <div
-      v-if="isActive && hoverInfo && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId"
+      v-if="isActive && hoverInfo && !pendingAnnotation && !editingAnnotation && !hoveredMarkerId && !isDraggingSelection"
       :class="[$style.hoverTooltip, !isDarkMode && $style.light]"
       :style="{
         left: `${hoverPosition.x}px`,
@@ -1553,20 +1576,63 @@ watch(dragStartPos, (newVal, oldVal) => {
     </template>
 
     <!-- Pending annotation popup -->
+    <!-- Multi-select outline when pending annotation exists -->
+    <div
+      v-if="pendingAnnotation && pendingAnnotation.boundingBox"
+      :class="pendingAnnotation.isMultiSelect ? $style.multiSelectOutline : $style.singleSelectOutline"
+      :style="{
+        left: `${pendingAnnotation.boundingBox.x}px`,
+        top: `${pendingAnnotation.boundingBox.y - scrollY}px`,
+        width: `${pendingAnnotation.boundingBox.width}px`,
+        height: `${pendingAnnotation.boundingBox.height}px`,
+        ...(pendingAnnotation.isMultiSelect ? {} : {
+          borderColor: `${settings.annotationColor}99`,
+          backgroundColor: `${settings.annotationColor}0D`,
+        }),
+      }"
+    />
+    <!-- Pending marker with plus icon -->
+    <div
+      v-if="pendingAnnotation"
+      :class="[$style.marker, $style.pending, pendingAnnotation.isMultiSelect && $style.multiSelect]"
+      :style="{
+        left: `${pendingAnnotation.x}%`,
+        top: `${pendingAnnotation.clientY}px`,
+        backgroundColor: pendingAnnotation.isMultiSelect ? '#34C759' : settings.annotationColor,
+      }"
+    >
+      <component :is="IconPlus" :size="12" />
+    </div>
     <AnnotationPopup
       v-if="pendingAnnotation"
       ref="popupRef"
       :element="pendingAnnotation.element"
       :selected-text="pendingAnnotation.selectedText"
       :computed-styles="pendingAnnotation.computedStylesObj"
-      :accent-color="props.accentColor"
+      :accent-color="pendingAnnotation.isMultiSelect ? '#34C759' : props.accentColor"
       :light-mode="!isDarkMode"
       :popup-style="pendingPopupStyle"
+      :placeholder="pendingAnnotation.element === 'Empty area' ? 'What should change in this area?' : (pendingAnnotation.isMultiSelect ? 'Feedback for this group of elements...' : 'What should change?')"
       @submit="handlePopupSubmit"
       @cancel="handlePopupCancel"
     />
 
     <!-- Edit annotation popup -->
+    <!-- Edit annotation outline -->
+    <div
+      v-if="editingAnnotation && editingAnnotation.boundingBox"
+      :class="editingAnnotation.isMultiSelect ? $style.multiSelectOutline : $style.singleSelectOutline"
+      :style="{
+        left: `${editingAnnotation.boundingBox.x}px`,
+        top: `${editingAnnotation.boundingBox.y - scrollY}px`,
+        width: `${editingAnnotation.boundingBox.width}px`,
+        height: `${editingAnnotation.boundingBox.height}px`,
+        ...(editingAnnotation.isMultiSelect ? {} : {
+          borderColor: `${settings.annotationColor}99`,
+          backgroundColor: `${settings.annotationColor}0D`,
+        }),
+      }"
+    />
     <AnnotationPopup
       v-if="editingAnnotation"
       ref="editPopupRef"
@@ -1574,7 +1640,7 @@ watch(dragStartPos, (newVal, oldVal) => {
       :selected-text="editingAnnotation.selectedText"
       :initial-value="editingAnnotation.comment"
       :computed-styles="editingAnnotation.computedStyles ? undefined : undefined"
-      :accent-color="props.accentColor"
+      :accent-color="editingAnnotation.isMultiSelect ? '#34C759' : props.accentColor"
       :light-mode="!isDarkMode"
       submit-label="Save"
       :popup-style="editPopupStyle"
@@ -1626,7 +1692,7 @@ watch(dragStartPos, (newVal, oldVal) => {
 // Multi-select Styles | 多选样式
 // =============================================================================
 
-$green: #10b981;
+$green: #34C759;
 
 .dragSelection {
   position: fixed;
@@ -1671,6 +1737,44 @@ $green: #10b981;
   margin-left: -13px;
   margin-top: -13px;
   font-size: 0.75rem;
+
+  &.pending {
+    background: $green;
+  }
+}
+
+.pending {
+  position: fixed;
+}
+
+.multiSelectOutline {
+  position: fixed;
+  border: 2px dashed rgba($green, 0.6);
+  border-radius: 4px;
+  pointer-events: none !important;
+  background: rgba($green, 0.05);
+  z-index: 99998;
+  animation: hoverHighlightIn 0.15s ease-out forwards;
+}
+
+.singleSelectOutline {
+  position: fixed;
+  border: 2px solid;
+  border-radius: 4px;
+  pointer-events: none !important;
+  z-index: 99998;
+  animation: hoverHighlightIn 0.15s ease-out forwards;
+}
+
+@keyframes hoverHighlightIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 // =============================================================================

@@ -26,7 +26,9 @@ export default defineNuxtConfig({
   },
 
   css: [
-    'agentation-vue3/dist/style.css',
+    // Only import dist CSS in production (when using npm package)
+    // In development, styles come from source components via CSS Modules
+    ...(process.env.NODE_ENV === 'production' ? ['agentation-vue3/dist/style.css'] : []),
     '~/assets/globals.scss',
   ],
 
@@ -37,7 +39,7 @@ export default defineNuxtConfig({
     // Local development: use source code directly for HMR
     // 本地开发：直接使用源码以支持热更新
     resolve: {
-      alias: process.dev
+      alias: process.env.NODE_ENV !== 'production'
         ? { 'agentation-vue3': '../src/index.ts' }
         : {},
     },
