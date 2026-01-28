@@ -2,10 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
-  // Cloudflare Pages deployment (static site generation)
-  // 部署到 Cloudflare Pages（静态站点生成）
   nitro: {
-    preset: 'cloudflare-pages-static',
+    preset: 'cloudflare-module',
   },
 
   app: {
