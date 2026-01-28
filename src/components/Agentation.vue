@@ -754,7 +754,22 @@ const handleCopy = async () => {
 
   if (props.copyToClipboard) {
     try {
-      await navigator.clipboard.writeText(output)
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(output)
+      } else {
+        // Fallback for non-secure contexts (http://localhost)
+        const textArea = document.createElement('textarea')
+        textArea.value = output
+        textArea.style.position = 'fixed'
+        textArea.style.left = '-9999px'
+        textArea.style.top = '-9999px'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+      }
       copied.value = true
       setTimeout(() => {
         copied.value = false

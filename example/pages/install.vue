@@ -6,11 +6,26 @@ const { t } = useI18n()
 const copiedStates = ref<Record<string, boolean>>({})
 
 const copyToClipboard = async (text: string, key: string) => {
-  await navigator.clipboard.writeText(text)
-  copiedStates.value[key] = true
-  setTimeout(() => {
-    copiedStates.value[key] = false
-  }, 2000)
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-9999px'
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+    }
+    copiedStates.value[key] = true
+    setTimeout(() => {
+      copiedStates.value[key] = false
+    }, 2000)
+  } catch (e) {
+    console.error('Failed to copy:', e)
+  }
 }
 </script>
 
@@ -66,14 +81,19 @@ const copyToClipboard = async (text: string, key: string) => {
         <p>
           {{ t('install.addToAppDesc') }}<code>import.meta.env.DEV</code> {{ t('install.addToAppDesc2') }}
         </p>
-        <pre class="code-block">&lt;script setup lang="ts"&gt;
+        <pre class="code-block">&lt;template&gt;
+  &lt;YourApp /&gt;
+  &lt;Agentation v-if="isDev" /&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
 import { Agentation } from "agentation-vue3";
+import "agentation-vue3/dist/style.css";
+
+const isDev = import.meta.env.DEV;
 &lt;/script&gt;
 
-&lt;template&gt;
-  &lt;YourApp /&gt;
-  &lt;Agentation v-if="import.meta.env.DEV" /&gt;
-&lt;/template&gt;</pre>
+</pre>
       </section>
 
       <section>

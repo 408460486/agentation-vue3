@@ -1,49 +1,7 @@
 <script setup lang="ts">
-import CodeBlock from '~/components/CodeBlock.vue'
 import { useI18n } from '~/composables/useI18n'
 
 const { t } = useI18n()
-
-const basicUsageCode = `<script setup lang="ts">
-import { Agentation, type Annotation } from "agentation-vue3";
-
-const handleAnnotation = (annotation: Annotation) => {
-  console.log(annotation.element, annotation.comment);
-};
-<\/script>
-
-<template>
-  <YourApp />
-  <Agentation @annotation-add="handleAnnotation" />
-</template>`
-
-const annotationTypeCode = `type Annotation = {
-  id: string;              // Unique identifier
-  element: string;         // Human-readable element name
-  elementPath: string;     // CSS selector path
-  comment: string;         // User's annotation text
-  timestamp: number;       // Unix timestamp
-  x: number;               // Position (% of viewport width)
-  y: number;               // Position (px from top, or viewport if fixed)
-  selectedText?: string;   // If text was selected
-  boundingBox?: {          // Element dimensions
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  // Additional fields (Detailed/Forensic modes)
-  nearbyText?: string;
-  cssClasses?: string;
-  nearbyElements?: string;
-  computedStyles?: string;
-  fullPath?: string;
-  accessibility?: string;
-  isMultiSelect?: boolean;
-  isFixed?: boolean;
-};`
-
-const typescriptCode = `import type { Annotation, AgentationProps } from "agentation-vue3";`
 </script>
 
 <template>
@@ -121,7 +79,18 @@ const typescriptCode = `import type { Annotation, AgentationProps } from "agenta
         <p>
           {{ t('api.basicUsageDesc') }}
         </p>
-        <CodeBlock :code="basicUsageCode" language="typescript" />
+        <pre class="code-block">&lt;script setup lang="ts"&gt;
+import { Agentation, type Annotation } from "agentation-vue3";
+
+const handleAnnotation = (annotation: Annotation) =&gt; {
+  console.log(annotation.element, annotation.comment);
+};
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;YourApp /&gt;
+  &lt;Agentation @annotation-add="handleAnnotation" /&gt;
+&lt;/template&gt;</pre>
       </section>
 
       <section>
@@ -129,7 +98,31 @@ const typescriptCode = `import type { Annotation, AgentationProps } from "agenta
         <p>
           {{ t('api.annotationTypeDesc') }}<code>Annotation</code> {{ t('api.annotationTypeDesc2') }}
         </p>
-        <CodeBlock :code="annotationTypeCode" language="typescript" />
+        <pre class="code-block">type Annotation = {
+  id: string;              // Unique identifier
+  element: string;         // Human-readable element name
+  elementPath: string;     // CSS selector path
+  comment: string;         // User's annotation text
+  timestamp: number;       // Unix timestamp
+  x: number;               // Position (% of viewport width)
+  y: number;               // Position (px from top, or viewport if fixed)
+  selectedText?: string;   // If text was selected
+  boundingBox?: {          // Element dimensions
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  // Additional fields (Detailed/Forensic modes)
+  nearbyText?: string;
+  cssClasses?: string;
+  nearbyElements?: string;
+  computedStyles?: string;
+  fullPath?: string;
+  accessibility?: string;
+  isMultiSelect?: boolean;
+  isFixed?: boolean;
+};</pre>
       </section>
 
       <section>
@@ -137,7 +130,7 @@ const typescriptCode = `import type { Annotation, AgentationProps } from "agenta
         <p>
           {{ t('api.typescriptDesc') }}
         </p>
-        <CodeBlock :code="typescriptCode" language="typescript" />
+        <pre class="code-block">import type { Annotation, AgentationProps } from "agentation-vue3";</pre>
       </section>
     </article>
 
