@@ -66,10 +66,14 @@ pnpm test        # Run tests
 
 ### Release Steps / 发布步骤
 
+> **重要**: 以下所有步骤均在 `vue3` 项目目录下执行。请先确认已进入正确目录：
+> ```bash
+> cd vue3  # 确保在 vue3 项目根目录
+> pwd      # 应显示 .../agentation/vue3
+> ```
+
 #### 1. Update library version / 更新库版本号
 ```bash
-cd vue3  # 进入库项目目录
-
 # 更新 package.json 版本号 (选择其一)
 npm version patch  # 1.0.0 → 1.0.1 (bug fixes / 修复问题)
 npm version minor  # 1.0.0 → 1.1.0 (new features / 新功能)

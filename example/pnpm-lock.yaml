@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       agentation-vue3:
-        specifier: ^1.0.2
-        version: 1.0.2(vue@3.5.27)
+        specifier: ^1.0.3
+        version: 1.0.3(vue@3.5.27)
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -1651,8 +1651,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  agentation-vue3@1.0.2:
-    resolution: {integrity: sha512-cv4kilQkj4aHbpMl1W0P03TsmJpny23hjr399uVvKpUCHo3i9Ei/TGLYJjk5EgSr3zIc/pbPcM7Wq6TqCH2b7g==}
+  agentation-vue3@1.0.3:
+    resolution: {integrity: sha512-lgyFHnsFHQ+A1m8VgOhLqddm0QlG7RwNcLyZQcIrOoxwV7FNl7J6IwZvAc4H5eLKojZ49lbq4XIjEF5S+Y4Wrg==}
     peerDependencies:
       vue: '>=3.3.0'
 
@@ -5446,7 +5446,7 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  agentation-vue3@1.0.2(vue@3.5.27):
+  agentation-vue3@1.0.3(vue@3.5.27):
     dependencies:
       vue: 3.5.27
 
