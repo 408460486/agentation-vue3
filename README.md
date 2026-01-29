@@ -6,7 +6,7 @@
 
 ## 中文
 
-> **作者 [binyy](https://github.com/408460486)**，基于 [Benji Taylor](https://x.com/benjitaylor)、[Dennis Jin](https://x.com/seldom) 和 [Alex Vanderzon](https://x.com/alexvanderzon) 的 React 版本
+> **作者 [binyy](https://github.com/408460486)** | [官方地址](https://agentation-vue3.starpipi.eu.org)，基于 [Benji Taylor](https://x.com/benjitaylor)、[Dennis Jin](https://x.com/seldom) 和 [Alex Vanderzon](https://x.com/alexvanderzon) 的 React 版本
 >
 > 原始 React 版本：[GitHub](https://github.com/benjitaylor/agentation) · [NPM](https://www.npmjs.com/package/agentation)
 
@@ -72,7 +72,7 @@ Agentation 捕获类名、选择器和元素位置，以便 AI 助手可以 `gre
 
 ## English
 
-> **Made by [binyy](https://github.com/408460486)**, forked from [Benji Taylor](https://x.com/benjitaylor), [Dennis Jin](https://x.com/seldom), and [Alex Vanderzon](https://x.com/alexvanderzon)'s React version
+> **Made by [binyy](https://github.com/408460486)** | [Official Site](https://agentation-vue3.starpipi.eu.org), forked from [Benji Taylor](https://x.com/benjitaylor), [Dennis Jin](https://x.com/seldom), and [Alex Vanderzon](https://x.com/alexvanderzon)'s React version
 >
 > Original React Version: [GitHub](https://github.com/benjitaylor/agentation) · [NPM](https://www.npmjs.com/package/agentation)
 
