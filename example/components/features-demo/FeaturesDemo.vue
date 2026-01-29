@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from '~/composables/useI18n'
 import TextSelectionDemo from './TextSelectionDemo.vue'
 import ElementClickDemo from './ElementClickDemo.vue'
 import MultiSelectDemo from './MultiSelectDemo.vue'
@@ -7,39 +8,41 @@ import AreaSelectionDemo from './AreaSelectionDemo.vue'
 import AnimationPauseDemo from './AnimationPauseDemo.vue'
 import './FeaturesDemo.css'
 
+const { t } = useI18n()
+
 type FeatureKey = 'text-selection' | 'element-click' | 'multi-select' | 'area-selection' | 'animation-pause'
 
 interface Feature {
   key: FeatureKey
-  label: string
-  caption: string
+  labelKey: string
+  captionKey: string
 }
 
 const features: Feature[] = [
   {
     key: 'text-selection',
-    label: 'Text',
-    caption: 'Select text to annotate typos, content issues, or copy changes.\nThe quoted text is included in the output.',
+    labelKey: 'featuresDemo.text',
+    captionKey: 'featuresDemo.textCaption',
   },
   {
     key: 'element-click',
-    label: 'Elements',
-    caption: 'Click any element to add feedback.\nAgentation identifies it by class name, ID, or semantic content.',
+    labelKey: 'featuresDemo.elements',
+    captionKey: 'featuresDemo.elementsCaption',
   },
   {
     key: 'multi-select',
-    label: 'Multi-Select',
-    caption: 'Drag to select multiple elements at once.\nAll selected elements are included in a single annotation.',
+    labelKey: 'featuresDemo.multiSelect',
+    captionKey: 'featuresDemo.multiSelectCaption',
   },
   {
     key: 'area-selection',
-    label: 'Area',
-    caption: 'Drag to select any region, even empty space.\nUseful for layout feedback or indicating where something should go.',
+    labelKey: 'featuresDemo.area',
+    captionKey: 'featuresDemo.areaCaption',
   },
   {
     key: 'animation-pause',
-    label: 'Animation',
-    caption: 'Freeze CSS animations to annotate specific states.\nClick pause in the toolbar to stop all animations.',
+    labelKey: 'featuresDemo.animation',
+    captionKey: 'featuresDemo.animationCaption',
   },
 ]
 
@@ -63,7 +66,7 @@ const currentFeature = computed(() => features.find(f => f.key === activeFeature
         :class="['fd-tab', { active: activeFeature === feature.key }]"
         @click="handleFeatureChange(feature.key)"
       >
-        {{ feature.label }}
+        {{ t(feature.labelKey) }}
       </button>
     </div>
 
@@ -79,7 +82,7 @@ const currentFeature = computed(() => features.find(f => f.key === activeFeature
       :key="activeFeature"
       style="margin-top: 1rem; font-size: 0.75rem; color: rgba(0,0,0,0.5); white-space: pre-line; line-height: 1.3; animation: fadeIn 0.3s ease"
     >
-      {{ currentFeature.caption }}
+      {{ t(currentFeature.captionKey) }}
     </p>
   </div>
 </template>

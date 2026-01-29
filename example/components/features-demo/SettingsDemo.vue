@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -41,12 +44,12 @@ const positionsRef = ref({
 
 const currentColor = computed(() => COLOR_OPTIONS[selectedColor.value].value)
 
-const captions: Record<string, string> = {
-  output: 'Choose how much detail to include in your output.',
-  color: 'Pick a marker colour that stands out against your design.',
-  clear: 'Automatically clear all annotations after copying.',
-  block: 'Prevent accidental clicks on page elements while annotating.',
-  theme: 'Switch between dark and light mode.',
+const captionKeys: Record<string, string> = {
+  output: 'settingsDemo.output',
+  color: 'settingsDemo.color',
+  clear: 'settingsDemo.clear',
+  block: 'settingsDemo.block',
+  theme: 'settingsDemo.theme',
 }
 
 const measurePositions = () => {
@@ -268,7 +271,7 @@ onUnmounted(() => {
 
     <!-- Caption -->
     <p :key="activeCaption" style="margin-top: 1rem; font-size: 0.75rem; color: rgba(0,0,0,0.5); white-space: pre-line; line-height: 1.3; animation: fadeIn 0.3s ease">
-      {{ activeCaption ? captions[activeCaption] : captions.output }}
+      {{ t(activeCaption ? captionKeys[activeCaption] : captionKeys.output) }}
     </p>
   </div>
 </template>

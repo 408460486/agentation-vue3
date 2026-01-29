@@ -35,6 +35,7 @@ import {
   saveAnnotations,
   getStorageKey,
 } from '../utils/storage'
+import { version } from '../../package.json'
 
 // Module-level flag to prevent re-animating on SPA page navigation
 let hasPlayedEntranceAnimation = false
@@ -88,7 +89,7 @@ type ToolbarSettings = {
   outputDetail: OutputDetailLevel
   annotationColor: string
   autoClearAfterCopy: boolean
-  freezeAnimations: boolean
+  blockInteractions: boolean
 }
 
 const OUTPUT_DETAIL_OPTIONS = [
@@ -110,7 +111,7 @@ const DEFAULT_SETTINGS: ToolbarSettings = {
   outputDetail: 'standard',
   annotationColor: '#3c82f7',
   autoClearAfterCopy: false,
-  freezeAnimations: false,
+  blockInteractions: false,
 }
 
 type PendingAnnotation = {
@@ -189,7 +190,6 @@ const hoveredMarkerId = ref<string | null>(null)
 const isDarkMode = ref(true)
 const showEntranceAnimation = ref(false)
 const scrollY = ref(0)
-const outputDetail = ref<OutputDetailLevel>('standard')
 const showSettings = ref(false)
 const showSettingsVisible = ref(false)
 const settings = ref<ToolbarSettings>({ ...DEFAULT_SETTINGS })
@@ -504,7 +504,18 @@ function generateOutput(annots: Annotation[], path: string, level: OutputDetailL
   const viewport = typeof window !== 'undefined' ? `${window.innerWidth}×${window.innerHeight}` : 'unknown'
   let output = `## Page Feedback: ${path}\n`
 
-  if (level !== 'compact') {
+  if (level === 'forensic') {
+    // Full environment info for forensic mode
+    output += `\n**Environment:**\n`
+    output += `- Viewport: ${viewport}\n`
+    if (typeof window !== 'undefined') {
+      output += `- URL: ${window.location.href}\n`
+      output += `- User Agent: ${navigator.userAgent}\n`
+      output += `- Timestamp: ${new Date().toISOString()}\n`
+      output += `- Device Pixel Ratio: ${window.devicePixelRatio}\n`
+    }
+    output += `\n---\n`
+  } else if (level !== 'compact') {
     output += `**Viewport:** ${viewport}\n`
   }
   output += '\n'
@@ -516,12 +527,60 @@ function generateOutput(annots: Annotation[], path: string, level: OutputDetailL
         output += ` (re: "${a.selectedText.slice(0, 30)}${a.selectedText.length > 30 ? '...' : ''}")`
       }
       output += '\n'
-    } else {
+    } else if (level === 'forensic') {
+      // Forensic mode - order matches output page example
       output += `### ${i + 1}. ${a.element}\n`
-      output += `**Location:** ${a.elementPath}\n`
+      if (a.isMultiSelect && a.fullPath) {
+        output += `*Forensic data shown for first element of selection*\n`
+      }
+      if (a.fullPath) {
+        output += `**Full DOM Path:** ${a.fullPath}\n`
+      }
+      if (a.cssClasses) {
+        output += `**CSS Classes:** ${a.cssClasses}\n`
+      }
+      if (a.boundingBox) {
+        output += `**Position:** x:${Math.round(a.boundingBox.x)}, y:${Math.round(a.boundingBox.y)} (${Math.round(a.boundingBox.width)}×${Math.round(a.boundingBox.height)}px)\n`
+      }
+      output += `**Annotation at:** ${a.x.toFixed(1)}% from left, ${Math.round(a.y)}px from top\n`
       if (a.selectedText) {
         output += `**Selected text:** "${a.selectedText}"\n`
       }
+      if (a.nearbyText && !a.selectedText) {
+        output += `**Context:** ${a.nearbyText.slice(0, 100)}\n`
+      }
+      if (a.computedStyles) {
+        output += `**Computed Styles:** ${a.computedStyles}\n`
+      }
+      if (a.accessibility) {
+        output += `**Accessibility:** ${a.accessibility}\n`
+      }
+      if (a.nearbyElements) {
+        output += `**Nearby Elements:** ${a.nearbyElements}\n`
+      }
+      output += `**Feedback:** ${a.comment}\n\n`
+    } else {
+      // Standard and detailed modes
+      output += `### ${i + 1}. ${a.element}\n`
+      output += `**Location:** ${a.elementPath}\n`
+
+      if (level === 'detailed') {
+        if (a.cssClasses) {
+          output += `**Classes:** ${a.cssClasses}\n`
+        }
+        if (a.boundingBox) {
+          output += `**Position:** ${Math.round(a.boundingBox.x)}px, ${Math.round(a.boundingBox.y)}px (${Math.round(a.boundingBox.width)}×${Math.round(a.boundingBox.height)}px)\n`
+        }
+      }
+
+      if (a.selectedText) {
+        output += `**Selected text:** "${a.selectedText}"\n`
+      }
+
+      if (level === 'detailed' && a.nearbyText && !a.selectedText) {
+        output += `**Context:** ${a.nearbyText.slice(0, 100)}\n`
+      }
+
       output += `**Feedback:** ${a.comment}\n\n`
     }
   })
@@ -611,8 +670,10 @@ const toggleFreeze = () => {
   if (justFinishedToolbarDrag) return
   if (isFrozen.value) {
     unfreezeAnimations()
+    settings.value.blockInteractions = false
   } else {
     freezeAnimations()
+    settings.value.blockInteractions = true
   }
 }
 
@@ -749,7 +810,7 @@ const constrainToolbarPosition = () => {
 
 const handleCopy = async () => {
   if (justFinishedToolbarDrag) return
-  const output = generateOutput(annotations.value, pathname, outputDetail.value)
+  const output = generateOutput(annotations.value, pathname, settings.value.outputDetail)
   if (!output) return
 
   if (props.copyToClipboard) {
@@ -774,6 +835,14 @@ const handleCopy = async () => {
       setTimeout(() => {
         copied.value = false
       }, 2000)
+
+      // Clear annotations after copy if setting is enabled
+      if (settings.value.autoClearAfterCopy) {
+        const clearedAnnotations = [...annotations.value]
+        annotations.value = []
+        localStorage.removeItem(getStorageKey(pathname))
+        emit('annotationsClear', clearedAnnotations)
+      }
     } catch (e) {
       console.error('Failed to copy:', e)
     }
@@ -1056,13 +1125,30 @@ const handleClick = (e: MouseEvent) => {
   if (target.closest('[data-annotation-popup]')) return
   if (target.closest('[data-annotation-marker]')) return
 
+  const isInteractive = target.closest(
+    "button, a, input, select, textarea, [role='button'], [onclick]"
+  )
+
+  // Block interactions on interactive elements when enabled
+  if (settings.value.blockInteractions && isInteractive) {
+    e.preventDefault()
+    e.stopPropagation()
+    // Still create annotation on the interactive element
+  }
+
   if (pendingAnnotation.value) {
+    if (isInteractive && !settings.value.blockInteractions) {
+      return
+    }
     e.preventDefault()
     popupRef.value?.shake()
     return
   }
 
   if (editingAnnotation.value) {
+    if (isInteractive && !settings.value.blockInteractions) {
+      return
+    }
     e.preventDefault()
     editPopupRef.value?.shake()
     return
@@ -1162,6 +1248,16 @@ onMounted(() => {
     // Ignore
   }
 
+  // Load settings
+  try {
+    const storedSettings = localStorage.getItem('feedback-toolbar-settings')
+    if (storedSettings) {
+      settings.value = { ...DEFAULT_SETTINGS, ...JSON.parse(storedSettings) }
+    }
+  } catch (e) {
+    // Ignore parsing errors
+  }
+
   // Add event listeners
   document.addEventListener('mousemove', handleMouseMove)
   document.addEventListener('click', handleClick, true)
@@ -1238,6 +1334,13 @@ watch(annotations, (newAnnotations) => {
   }
 }, { deep: true })
 
+// Save settings
+watch(settings, (newSettings) => {
+  if (mounted.value) {
+    localStorage.setItem('feedback-toolbar-settings', JSON.stringify(newSettings))
+  }
+}, { deep: true })
+
 // Handle showSettings changes with exit animation
 watch(showSettings, (visible) => {
   if (visible) {
@@ -1249,8 +1352,8 @@ watch(showSettings, (visible) => {
   }
 })
 
-// Sync freezeAnimations setting with actual freeze state
-watch(() => settings.value.freezeAnimations, (shouldFreeze) => {
+// Sync blockInteractions setting with actual freeze state
+watch(() => settings.value.blockInteractions, (shouldFreeze) => {
   if (shouldFreeze) {
     freezeAnimations()
   } else {
@@ -1267,7 +1370,7 @@ watch(isActive, (active) => {
     showSettings.value = false
     if (isFrozen.value) {
       unfreezeAnimations()
-      settings.value.freezeAnimations = false
+      settings.value.blockInteractions = false
     }
   }
   // Constrain position when expanding/collapsing
@@ -1407,7 +1510,7 @@ watch(dragStartPos, (newVal, oldVal) => {
             </span>
             agentation
           </span>
-          <span :class="$style.settingsVersion">v1.0.0</span>
+          <span :class="$style.settingsVersion">v{{ version }}</span>
           <button
             :class="$style.themeToggle"
             @click="toggleTheme"
@@ -1478,13 +1581,13 @@ watch(dragStartPos, (newVal, oldVal) => {
           <label :class="$style.settingsToggle">
             <input
               type="checkbox"
-              v-model="settings.freezeAnimations"
+              v-model="settings.blockInteractions"
             />
-            <span :class="[$style.customCheckbox, !isDarkMode && $style.light, settings.freezeAnimations && $style.checked]">
-              <component v-if="settings.freezeAnimations" :is="IconCheckSmallAnimated" :size="14" />
+            <span :class="[$style.customCheckbox, !isDarkMode && $style.light, settings.blockInteractions && $style.checked]">
+              <component v-if="settings.blockInteractions" :is="IconCheckSmallAnimated" :size="14" />
             </span>
             <span :class="[$style.toggleLabel, !isDarkMode && $style.light]">
-              Freeze animations
+              Block page interactions
             </span>
           </label>
         </div>
@@ -1530,8 +1633,8 @@ watch(dragStartPos, (newVal, oldVal) => {
         top: `${hoverInfo.rect.top}px`,
         width: `${hoverInfo.rect.width}px`,
         height: `${hoverInfo.rect.height}px`,
-        borderColor: props.accentColor,
-        backgroundColor: hexToRgba(props.accentColor, 0.1),
+        borderColor: settings.annotationColor,
+        backgroundColor: hexToRgba(settings.annotationColor, 0.1),
       }"
     />
 
@@ -1562,7 +1665,7 @@ watch(dragStartPos, (newVal, oldVal) => {
           left: `${annotation.x}%`,
           top: annotation.isFixed ? `${annotation.y}px` : `${annotation.y - scrollY}px`,
           position: 'fixed',
-          backgroundColor: hoveredMarkerId === annotation.id ? undefined : (annotation.isMultiSelect ? '#10b981' : props.accentColor),
+          backgroundColor: hoveredMarkerId === annotation.id ? undefined : (annotation.isMultiSelect ? '#10b981' : settings.annotationColor),
         }"
         data-annotation-marker
         @mouseenter="hoveredMarkerId = annotation.id"
@@ -1624,7 +1727,7 @@ watch(dragStartPos, (newVal, oldVal) => {
       :element="pendingAnnotation.element"
       :selected-text="pendingAnnotation.selectedText"
       :computed-styles="pendingAnnotation.computedStylesObj"
-      :accent-color="pendingAnnotation.isMultiSelect ? '#34C759' : props.accentColor"
+      :accent-color="pendingAnnotation.isMultiSelect ? '#34C759' : settings.annotationColor"
       :light-mode="!isDarkMode"
       :popup-style="pendingPopupStyle"
       :placeholder="pendingAnnotation.element === 'Empty area' ? 'What should change in this area?' : (pendingAnnotation.isMultiSelect ? 'Feedback for this group of elements...' : 'What should change?')"
@@ -1655,7 +1758,7 @@ watch(dragStartPos, (newVal, oldVal) => {
       :selected-text="editingAnnotation.selectedText"
       :initial-value="editingAnnotation.comment"
       :computed-styles="editingAnnotation.computedStyles ? undefined : undefined"
-      :accent-color="editingAnnotation.isMultiSelect ? '#34C759' : props.accentColor"
+      :accent-color="editingAnnotation.isMultiSelect ? '#34C759' : settings.annotationColor"
       :light-mode="!isDarkMode"
       submit-label="Save"
       :popup-style="editPopupStyle"

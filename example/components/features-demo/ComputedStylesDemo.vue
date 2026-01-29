@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import ToolbarIcon from './ToolbarIcon.vue'
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -275,8 +278,7 @@ onUnmounted(() => {
     </div>
 
     <p style="margin-top: 1rem; font-size: 0.75rem; color: rgba(0,0,0,0.5); white-space: pre-line; line-height: 1.3">
-      Click the chevron to expand computed CSS styles for the selected element.
-Useful for debugging styling issues or communicating design specs.
+      {{ t('computedStyles.caption') }}
     </p>
   </div>
 </template>

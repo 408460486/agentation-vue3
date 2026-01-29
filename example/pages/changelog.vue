@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from '~/composables/useI18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 type ChangeType = 'added' | 'fixed' | 'improved' | 'removed'
 
@@ -17,13 +18,6 @@ interface Release {
   changes?: Change[]
 }
 
-const badgeLabels: Record<ChangeType, string> = {
-  added: 'Added',
-  fixed: 'Fixed',
-  improved: 'Improved',
-  removed: 'Removed',
-}
-
 // Computed badge labels for i18n
 const getBadgeLabel = (type: ChangeType): string => {
   const labels: Record<ChangeType, string> = {
@@ -35,61 +29,82 @@ const getBadgeLabel = (type: ChangeType): string => {
   return labels[type]
 }
 
-const releases: Release[] = [
-  {
-    version: '1.3.2',
-    date: 'January 24, 2026',
-    changes: [
-      { type: 'fixed', text: 'Blurry tooltip text on marker hover (counter-scaled to offset parent transform)' },
-      { type: 'improved', text: 'Unified quote text styling between marker tooltip and annotation popup' },
-      { type: 'improved', text: 'Tooltip font and padding consistency' },
-    ],
-  },
-  {
-    version: '1.3.1',
-    date: 'January 23, 2026',
-    changes: [
-      { type: 'added', text: 'Custom tooltips with arrows on toolbar buttons' },
-      { type: 'added', text: 'Subtle stroke around marker dots for better visibility' },
-      { type: 'improved', text: 'Help icon design and tooltip styling' },
-    ],
-  },
-  {
-    version: '1.3.0',
-    date: 'January 23, 2026',
-    changes: [
-      { type: 'added', text: 'Collapsible computed styles section in annotation popup — click the chevron to view CSS properties for the selected element' },
-      { type: 'improved', text: 'Toolbar polish and visual refinements' },
-    ],
-  },
-  {
-    version: '1.2.0',
-    date: 'January 22, 2026',
-    changes: [
-      { type: 'added', text: 'Programmatic API: @annotation-add, @annotation-delete, @annotation-update, @annotations-clear, @copy events' },
-      { type: 'added', text: 'copy-to-clipboard prop to control clipboard behavior' },
-    ],
-  },
-  {
-    version: '1.1.1',
-    date: 'January 22, 2026',
-    changes: [
-      { type: 'fixed', text: 'Vue key prop warning in color picker' },
-    ],
-  },
-  {
-    version: '1.1.0',
-    date: 'January 21, 2026',
-    changes: [
-      { type: 'improved', text: 'Package exports now have proper TypeScript type conditions' },
-    ],
-  },
-  {
-    version: '1.0.0',
-    date: 'January 21, 2026',
-    summary: 'First stable release of agentation-vue3. Vue 3 port of the React version with full feature parity. Click elements to annotate them, select text, drag to multi-select. Multiple output detail levels, keyboard shortcuts, customizable marker colors, and localStorage persistence.',
-  },
-]
+// Releases data synced with CHANGELOG_EN.md and CHANGELOG_CN.md
+const releases = computed<Release[]>(() => {
+  if (locale.value === 'zh') {
+    return [
+      {
+        version: '1.0.2',
+        date: '2025-01-29',
+        changes: [
+          { type: 'fixed', text: '版本号现在从 package.json 动态获取' },
+          { type: 'fixed', text: '输出详情模式 (compact/standard/detailed/forensic) 现在正确工作并支持设置持久化' },
+          { type: 'fixed', text: '标记颜色现在正确与设置同步' },
+          { type: 'fixed', text: '复制后清除功能现在正常工作' },
+          { type: 'fixed', text: '阻止页面交互功能（原名冻结动画）现在正确冻结/解冻页面' },
+        ],
+      },
+      {
+        version: '1.0.1',
+        date: '2025-01-28',
+        changes: [
+          { type: 'added', text: '添加 GitHub Actions 工作流，在发布 Release 时自动发布到 npm' },
+          { type: 'added', text: '添加双语更新日志 (EN/CN)' },
+          { type: 'added', text: '鼠标框选多选功能（1:1 复刻 React 版本）' },
+          { type: 'improved', text: '多选框选功能增加待处理/编辑标注的视觉边框' },
+          { type: 'improved', text: '降低拖拽阈值从 8px 到 5px，使选择更灵敏' },
+          { type: 'improved', text: '拖拽选择时隐藏悬停高亮和提示' },
+          { type: 'improved', text: '待处理标记现在在鼠标位置显示加号图标' },
+          { type: 'improved', text: '多选使用绿色强调色 (#34C759) 以区分' },
+          { type: 'fixed', text: '修复拖拽选择完成后触发点击事件的问题' },
+          { type: 'fixed', text: '修复开发模式下 CSS 导入和别名配置' },
+          { type: 'fixed', text: '改进文本元素检测以支持原生文本选择' },
+        ],
+      },
+      {
+        version: '1.0.0',
+        date: '2025-01-28',
+        summary: 'agentation-vue3 首次发布。AI 编程代理的可视化反馈组件。点击元素标注、文本选择、拖拽多选。多种输出详情级别、键盘快捷键、可自定义标记颜色，以及 localStorage 持久化。',
+      },
+    ]
+  }
+  // English (default)
+  return [
+    {
+      version: '1.0.2',
+      date: '2025-01-29',
+      changes: [
+        { type: 'fixed', text: 'Version number now dynamically fetched from package.json' },
+        { type: 'fixed', text: 'Output Detail mode (compact/standard/detailed/forensic) now works correctly with settings persistence' },
+        { type: 'fixed', text: 'Marker colour properly syncs with settings across all components' },
+        { type: 'fixed', text: 'Clear after copy functionality now works as expected' },
+        { type: 'fixed', text: 'Block page interactions feature (renamed from Freeze Animations) now properly freezes/unfreezes page' },
+      ],
+    },
+    {
+      version: '1.0.1',
+      date: '2025-01-28',
+      changes: [
+        { type: 'added', text: 'GitHub Actions workflow for automatic npm publishing on release' },
+        { type: 'added', text: 'CHANGELOG with bilingual support (EN/CN)' },
+        { type: 'added', text: 'Mouse drag multi-select functionality (1:1 React port)' },
+        { type: 'improved', text: 'Multi-select drag selection with visual outline for pending/editing annotations' },
+        { type: 'improved', text: 'Reduced drag threshold from 8px to 5px for more responsive selection' },
+        { type: 'improved', text: 'Hide hover highlight and tooltip during drag selection' },
+        { type: 'improved', text: 'Pending marker now displays plus icon at mouse position' },
+        { type: 'improved', text: 'Multi-select uses green accent color (#34C759) for distinction' },
+        { type: 'fixed', text: 'Prevent click handler from firing after drag selection completes' },
+        { type: 'fixed', text: 'Fix development mode CSS import and alias configuration' },
+        { type: 'fixed', text: 'Improved text element detection for native text selection' },
+      ],
+    },
+    {
+      version: '1.0.0',
+      date: '2025-01-28',
+      summary: 'Initial release of agentation-vue3. Visual feedback components for AI coding agents. Click elements to annotate them, select text, drag to multi-select. Multiple output detail levels, keyboard shortcuts, customizable marker colors, and localStorage persistence.',
+    },
+  ]
+})
 
 const changeTypes: ChangeType[] = ['fixed', 'improved', 'added', 'removed']
 </script>

@@ -66,23 +66,40 @@ pnpm test        # Run tests
 
 ### Release Steps / 发布步骤
 
-#### 1. Update version and changelog / 更新版本和日志
+#### 1. Update library version / 更新库版本号
 ```bash
-# 更新 package.json 版本号
-npm version patch  # 或 minor / major
+cd vue3  # 进入库项目目录
 
+# 更新 package.json 版本号 (选择其一)
+npm version patch  # 1.0.0 → 1.0.1 (bug fixes / 修复问题)
+npm version minor  # 1.0.0 → 1.1.0 (new features / 新功能)
+npm version major  # 1.0.0 → 2.0.0 (breaking changes / 破坏性变更)
+
+# 或手动编辑 package.json 中的 "version" 字段
+```
+
+#### 2. Update changelog / 更新日志
+```bash
 # 编辑 CHANGELOG_EN.md 和 CHANGELOG_CN.md，将 [Unreleased] 内容移到新版本下
 # 格式: ## [x.y.z] - YYYY-MM-DD
 ```
 
-#### 2. Commit and push / 提交并推送
+#### 2.1 Sync changelog page / 同步更新日志页面
+```bash
+# 编辑 example/pages/changelog.vue
+# 将新版本的变更内容添加到 releases computed 属性中
+# 需要同时更新中文和英文两个版本的内容，与 CHANGELOG 文件保持一致
+# 文件位置: vue3/example/pages/changelog.vue
+```
+
+#### 3. Commit and push / 提交并推送
 ```bash
 git add package.json CHANGELOG_EN.md CHANGELOG_CN.md
 git commit -m "chore: bump version to x.y.z"
 git push
 ```
 
-#### 3. Create GitHub Release / 创建 GitHub Release
+#### 4. Create GitHub Release / 创建 GitHub Release
 ```bash
 gh release create vX.Y.Z --title "vX.Y.Z" --notes "Release notes here"
 ```

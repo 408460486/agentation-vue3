@@ -387,7 +387,12 @@ watch(() => isForensic.value, (newVal) => {
           </svg>
         </a>
         <span class="nav-dot">·</span>
-        <span class="nav-meta-placeholder">NPM</span>
+        <a
+          href="https://www.npmjs.com/package/agentation-vue3"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="nav-meta-link"
+        >NPM</a>
       </div>
       <!-- Vue2 -->
       <div class="nav-meta-row">
@@ -404,7 +409,12 @@ watch(() => isForensic.value, (newVal) => {
           </svg>
         </a>
         <span class="nav-dot">·</span>
-        <span class="nav-meta-placeholder">NPM</span>
+        <a
+          href="https://www.npmjs.com/package/agentation-vue2"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="nav-meta-link"
+        >NPM</a>
       </div>
     </div>
   </nav>

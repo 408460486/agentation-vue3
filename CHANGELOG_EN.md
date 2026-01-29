@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2025-01-29
+
+### Fixed
+- Version number now dynamically fetched from package.json
+- Output Detail mode (compact/standard/detailed/forensic) now works correctly with settings persistence
+- Marker colour properly syncs with settings across all components
+- Clear after copy functionality now works as expected
+- Block page interactions feature (renamed from Freeze Animations) now properly freezes/unfreezes page
+
 ## [1.0.1] - 2025-01-28
 
 ### Added

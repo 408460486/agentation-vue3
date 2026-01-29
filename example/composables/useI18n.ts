@@ -234,6 +234,46 @@ const messages: Record<Locale, Record<string, string>> = {
     'api.typescript': 'TypeScript',
     'api.typescriptDesc': 'Types are exported for full TypeScript support:',
 
+    // Features demo
+    'featuresDemo.text': 'Text',
+    'featuresDemo.textCaption': 'Select text to annotate typos, content issues, or copy changes.\nThe quoted text is included in the output.',
+    'featuresDemo.elements': 'Elements',
+    'featuresDemo.elementsCaption': 'Click any element to add feedback.\nAgentation identifies it by class name, ID, or semantic content.',
+    'featuresDemo.multiSelect': 'Multi-Select',
+    'featuresDemo.multiSelectCaption': 'Drag to select multiple elements at once.\nAll selected elements are included in a single annotation.',
+    'featuresDemo.area': 'Area',
+    'featuresDemo.areaCaption': 'Drag to select any region, even empty space.\nUseful for layout feedback or indicating where something should go.',
+    'featuresDemo.animation': 'Animation',
+    'featuresDemo.animationCaption': 'Freeze CSS animations to annotate specific states.\nClick pause in the toolbar to stop all animations.',
+
+    // MarkerKeyDemo
+    'markerKey.singleElement': 'Single element or text selection',
+    'markerKey.multiSelect': 'Multi-select or area (always green)',
+
+    // SmartIdentificationDemo
+    'smartId.button': 'Buttons and links are named by their text content.',
+    'smartId.link': 'Buttons and links are named by their text content.',
+    'smartId.heading': 'Headings are identified by their content.',
+    'smartId.image': 'Images use alt text or src filename.',
+    'smartId.input': 'Inputs use labels or placeholder text.',
+    'smartId.card': 'Other elements use class names or IDs.',
+
+    // ComputedStylesDemo
+    'computedStyles.caption': 'Click the chevron to expand computed CSS styles for the selected element.\nUseful for debugging styling issues or communicating design specs.',
+
+    // SettingsDemo
+    'settingsDemo.output': 'Choose how much detail to include in your output.',
+    'settingsDemo.color': 'Pick a marker colour that stands out against your design.',
+    'settingsDemo.clear': 'Automatically clear all annotations after copying.',
+    'settingsDemo.block': 'Prevent accidental clicks on page elements while annotating.',
+    'settingsDemo.theme': 'Switch between dark and light mode.',
+
+    // Footer
+    'footer.madeBy': 'Made by',
+    'footer.forkedFrom': ', forked from',
+    'footer.and': ', and',
+    'footer.reactVersion': "'s React version",
+
     // Changelog page
     'changelog.title': 'Changelog',
     'changelog.tagline': 'Release history',
@@ -477,6 +517,46 @@ const messages: Record<Locale, Record<string, string>> = {
     'api.annotationTypeDesc2': '对象：',
     'api.typescript': 'TypeScript',
     'api.typescriptDesc': '导出类型以获得完整的 TypeScript 支持：',
+
+    // Features demo
+    'featuresDemo.text': '文本',
+    'featuresDemo.textCaption': '选择文本以标注错别字、内容问题或复制更改。\n引用的文本将包含在输出中。',
+    'featuresDemo.elements': '元素',
+    'featuresDemo.elementsCaption': '点击任意元素添加反馈。\nAgentation 通过类名、ID 或语义内容识别它。',
+    'featuresDemo.multiSelect': '多选',
+    'featuresDemo.multiSelectCaption': '拖动以一次选择多个元素。\n所有选中的元素将包含在一个标注中。',
+    'featuresDemo.area': '区域',
+    'featuresDemo.areaCaption': '拖动以选择任意区域，包括空白区域。\n适用于布局反馈或指示某物应该放置的位置。',
+    'featuresDemo.animation': '动画',
+    'featuresDemo.animationCaption': '冻结 CSS 动画以标注特定状态。\n点击工具栏中的暂停按钮以停止所有动画。',
+
+    // MarkerKeyDemo
+    'markerKey.singleElement': '单个元素或文本选择',
+    'markerKey.multiSelect': '多选或区域（始终为绿色）',
+
+    // SmartIdentificationDemo
+    'smartId.button': '按钮和链接以其文本内容命名。',
+    'smartId.link': '按钮和链接以其文本内容命名。',
+    'smartId.heading': '标题通过其内容识别。',
+    'smartId.image': '图片使用 alt 文本或 src 文件名。',
+    'smartId.input': '输入框使用标签或占位符文本。',
+    'smartId.card': '其他元素使用类名或 ID。',
+
+    // ComputedStylesDemo
+    'computedStyles.caption': '点击箭头展开所选元素的计算 CSS 样式。\n适用于调试样式问题或传达设计规范。',
+
+    // SettingsDemo
+    'settingsDemo.output': '选择输出中包含多少细节。',
+    'settingsDemo.color': '选择一个与您的设计形成对比的标记颜色。',
+    'settingsDemo.clear': '复制后自动清除所有标注。',
+    'settingsDemo.block': '标注时防止意外点击页面元素。',
+    'settingsDemo.theme': '在深色和浅色模式之间切换。',
+
+    // Footer
+    'footer.madeBy': '作者',
+    'footer.forkedFrom': '，基于',
+    'footer.and': '和',
+    'footer.reactVersion': '的 React 版本',
 
     // Changelog page
     'changelog.title': '更新日志',

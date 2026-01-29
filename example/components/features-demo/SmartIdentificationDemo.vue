@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from '~/composables/useI18n'
+
+const { t } = useI18n()
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -26,13 +29,13 @@ const labels: Record<string, string> = {
   card: '.header-banner',
 }
 
-const captions: Record<string, string> = {
-  button: 'Buttons and links are named by their text content.',
-  link: 'Buttons and links are named by their text content.',
-  heading: 'Headings are identified by their content.',
-  image: 'Images use alt text or src filename.',
-  input: 'Inputs use labels or placeholder text.',
-  card: 'Other elements use class names or IDs.',
+const captionKeys: Record<string, string> = {
+  button: 'smartId.button',
+  link: 'smartId.link',
+  heading: 'smartId.heading',
+  image: 'smartId.image',
+  input: 'smartId.input',
+  card: 'smartId.card',
 }
 
 const getElementPosition = (el: HTMLElement | null, preferBelow = false) => {
@@ -221,7 +224,7 @@ onUnmounted(() => {
 
     <!-- Caption -->
     <p :key="activeCaption" style="margin-top: 1rem; font-size: 0.75rem; color: rgba(0,0,0,0.5); line-height: 1.5; animation: fadeIn 0.3s ease">
-      {{ captions[activeCaption] }}
+      {{ t(captionKeys[activeCaption]) }}
     </p>
   </div>
 </template>
