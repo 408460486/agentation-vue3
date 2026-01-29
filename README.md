@@ -66,7 +66,7 @@ Agentation 捕获类名、选择器和元素位置，以便 AI 助手可以 `gre
 
 ### 文档
 
-完整文档请访问 [agentation.dev](https://agentation-vue3.starpipi.eu.org/)
+完整文档请访问 [https://agentation-vue3.starpipi.eu.org/](https://agentation-vue3.starpipi.eu.org/)
 
 ---
 
