@@ -110,8 +110,15 @@ cd ..
 
 #### 6. Commit and push / 提交并推送
 ```bash
-git add package.json example/package.json CHANGELOG_EN.md CHANGELOG_CN.md example/pnpm-lock.yaml
+# 提交库版本发布相关文件
+git add package.json example/package.json CHANGELOG_EN.md CHANGELOG_CN.md example/pnpm-lock.yaml example/pages/changelog.vue src/
 git commit -m "chore: release vx.y.z"
+git push
+
+# 如果 example/ 目录有其他变更（如主题、UI调整等），需要单独提交
+# example/ 的变更不记录在 changelog 中，但代码仍需提交推送
+git add example/
+git commit -m "style: update example site"
 git push
 ```
 
