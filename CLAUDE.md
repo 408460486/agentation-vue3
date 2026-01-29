@@ -78,13 +78,19 @@ npm version major  # 1.0.0 → 2.0.0 (breaking changes / 破坏性变更)
 # 或手动编辑 package.json 中的 "version" 字段
 ```
 
-#### 2. Update changelog / 更新日志
+#### 2. Update example dependency version / 更新示例项目依赖版本
+```bash
+# 编辑 example/package.json，将 agentation-vue3 版本号更新为新版本
+# 例如: "agentation-vue3": "^1.0.2" → "agentation-vue3": "^1.0.3"
+```
+
+#### 3. Update changelog / 更新日志
 ```bash
 # 编辑 CHANGELOG_EN.md 和 CHANGELOG_CN.md，将 [Unreleased] 内容移到新版本下
 # 格式: ## [x.y.z] - YYYY-MM-DD
 ```
 
-#### 3 Sync changelog page / 同步更新日志页面
+#### 4 Sync changelog page / 同步更新日志页面
 ```bash
 # 编辑 example/pages/changelog.vue
 # 将新版本的变更内容添加到 releases computed 属性中
@@ -92,7 +98,7 @@ npm version major  # 1.0.0 → 2.0.0 (breaking changes / 破坏性变更)
 # 文件位置: vue3/example/pages/changelog.vue
 ```
 
-#### 4. Regenerate example lockfile / 重新生成示例项目锁文件
+#### 5. Regenerate example lockfile / 重新生成示例项目锁文件
 ```bash
 cd vue3/example
 rm -f pnpm-lock.yaml
@@ -100,19 +106,19 @@ pnpm install
 cd ..
 ```
 
-#### 5. Commit and push / 提交并推送
+#### 6. Commit and push / 提交并推送
 ```bash
-git add package.json CHANGELOG_EN.md CHANGELOG_CN.md example/pnpm-lock.yaml
+git add package.json example/package.json CHANGELOG_EN.md CHANGELOG_CN.md example/pnpm-lock.yaml
 git commit -m "chore: release vx.y.z"
 git push
 ```
 
-#### 6. Create GitHub Release / 创建 GitHub Release
+#### 7. Create GitHub Release / 创建 GitHub Release
 ```bash
 gh release create vX.Y.Z --title "vX.Y.Z" --notes "Release notes here"
 ```
 
-#### 7. Automatic npm publish / 自动发布到 npm
+#### 8. Automatic npm publish / 自动发布到 npm
 - GitHub Actions 会自动触发 `Publish to npm` 工作流
 - 工作流会构建项目并发布到 npm
 - 可通过以下命令查看状态:
