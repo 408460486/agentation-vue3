@@ -223,7 +223,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Caption -->
-    <p :key="activeCaption" style="margin-top: 1rem; font-size: 0.75rem; color: rgba(0,0,0,0.5); line-height: 1.5; animation: fadeIn 0.3s ease">
+    <p :key="activeCaption" style="margin-top: 1rem; font-size: 0.75rem; color: rgba(255,255,255,0.5); line-height: 1.5; animation: fadeIn 0.3s ease">
       {{ t(captionKeys[activeCaption]) }}
     </p>
   </div>

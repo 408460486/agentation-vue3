@@ -2,19 +2,19 @@
 // Example Page Styles (based on benji.org styling)
 // =============================================================================
 
-// CSS Variables
+// CSS Variables - Dark Theme
 :root {
   --font-primary: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  --body-color: #111;
-  --body-bg: #fdfdfc;
-  --heading-color: #111;
-  --hyperlink-color: #2480ed;
+  --body-color: #e8e8e8;
+  --body-bg: #0a0a0b;
+  --heading-color: #f0f0f0;
+  --hyperlink-color: #60a5fa;
 
-  --selection-color: #111111;
-  --selection-bg: #ededed;
-  --focus-color: rgba(0, 122, 255, 0.5);
+  --selection-color: #ffffff;
+  --selection-bg: #3b4252;
+  --focus-color: rgba(96, 165, 250, 0.5);
 }
 
 // Reset
@@ -56,7 +56,7 @@ body {
 
 // Typography
 h1, h2, h3, h4, h5, h6 {
-  color: rgba(0, 0, 0, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   position: relative;
 }
 
@@ -73,7 +73,7 @@ h2 {
   line-height: normal;
   letter-spacing: -0.005rem;
   margin-bottom: 1.125rem;
-  color: rgba(0, 0, 0, 0.78);
+  color: rgba(255, 255, 255, 0.8);
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -82,7 +82,7 @@ h2 {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -91,7 +91,7 @@ h3 {
   font-weight: 500;
   line-height: normal;
   letter-spacing: -0.005rem;
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 a {
@@ -128,7 +128,7 @@ button {
   transition: all 200ms ease;
 
   &:hover {
-    color: #74b1fd;
+    color: #93c5fd;
   }
 }
 
@@ -155,7 +155,7 @@ button {
   .side-nav-logo {
     font-size: 0.75rem;
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.85);
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
@@ -173,19 +173,19 @@ button {
   .nav-link {
     font-size: 0.75rem;
     font-variation-settings: 'wght' 450;
-    color: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.4);
     transition: color 0.15s ease, font-variation-settings 0.25s ease;
     display: flex;
     align-items: center;
     gap: 0.375rem;
 
     &:hover {
-      color: rgba(0, 0, 0, 0.55);
+      color: rgba(255, 255, 255, 0.65);
       font-variation-settings: 'wght' 550;
     }
 
     &.active {
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.9);
       font-variation-settings: 'wght' 550;
     }
   }
@@ -216,51 +216,51 @@ button {
   }
 
   .nav-meta-label {
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.45);
     font-weight: 500;
     min-width: 2.5rem;
   }
 
   .nav-meta-link {
-    color: rgba(0, 0, 0, 0.25);
+    color: rgba(255, 255, 255, 0.35);
     text-decoration: underline dotted;
     text-underline-offset: 2px;
     transition: color 0.15s ease;
 
     &:hover {
-      color: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.55);
     }
   }
 
   .nav-meta-placeholder {
-    color: rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.2);
   }
 
   .nav-version {
     font-size: 0.625rem;
-    color: rgba(0, 0, 0, 0.25);
+    color: rgba(255, 255, 255, 0.35);
     font-weight: 450;
     text-decoration: underline dotted;
     text-underline-offset: 2px;
     transition: color 0.15s ease;
 
     &:hover {
-      color: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.55);
     }
   }
 
   .nav-dot {
     font-size: 0.625rem;
-    color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.25);
   }
 
   .nav-github {
     display: flex;
-    color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.3);
     transition: color 0.15s ease;
 
     &:hover {
-      color: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.55);
     }
   }
 
@@ -302,13 +302,13 @@ button {
     padding-bottom: 0.75rem;
 
     .tagline {
-      color: rgba(0, 0, 0, 0.5);
+      color: rgba(255, 255, 255, 0.6);
       font-size: 0.875rem;
       font-weight: 450;
     }
 
     time {
-      color: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.45);
       font-size: 0.625rem;
       font-weight: 450;
       letter-spacing: 0.02rem;
@@ -338,7 +338,7 @@ button {
     font-weight: 450;
     line-height: 1.45rem;
     letter-spacing: -0.005rem;
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(255, 255, 255, 0.8);
 
     & + p {
       margin-top: 0.75rem;
@@ -346,10 +346,10 @@ button {
   }
 
   blockquote {
-    border-left: 2px solid #e0e0e0;
+    border-left: 2px solid rgba(255, 255, 255, 0.15);
     padding-left: 1rem;
     margin: 0.5rem 0;
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     font-style: italic;
   }
 
@@ -364,14 +364,14 @@ button {
       font-weight: 450;
       line-height: 1.45rem;
       letter-spacing: -0.005rem;
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.8);
 
       strong {
         font-weight: 550;
       }
 
       &::marker {
-        color: rgba(0, 0, 0, 0.25);
+        color: rgba(255, 255, 255, 0.3);
       }
     }
 
@@ -382,7 +382,7 @@ button {
 
       li {
         font-size: 0.8125rem;
-        color: rgba(0, 0, 0, 0.6);
+        color: rgba(255, 255, 255, 0.6);
       }
     }
   }
@@ -399,21 +399,21 @@ button {
   code {
     font-family: "SF Mono", "SFMono-Regular", ui-monospace, Consolas, monospace;
     font-size: 0.8125rem;
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(255, 255, 255, 0.08);
     padding: 0.1rem 0.35rem;
     border-radius: 0.25rem;
-    color: rgba(0, 0, 0, 0.75);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .code-block {
     font-family: "SF Mono", "SFMono-Regular", ui-monospace, Consolas, monospace;
     font-size: 0.75rem;
     line-height: 1.55;
-    background: #f8f8f8;
-    color: #333;
+    background: #151518;
+    color: #e0e0e0;
     padding: 0.875rem 1rem;
     border-radius: 0.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     overflow-x: hidden;
     white-space: pre-wrap;
     word-break: break-word;
@@ -431,9 +431,9 @@ button {
       padding: 0.375rem 0.75rem;
       font-size: 0.75rem;
       font-weight: 500;
-      background: white;
-      color: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      background: #1a1a1d;
+      color: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       margin-left: -1px;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -448,8 +448,8 @@ button {
       }
 
       &:hover:not(.active) {
-        background: rgba(0, 0, 0, 0.03);
-        color: rgba(0, 0, 0, 0.7);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.75);
       }
 
       &.active {
@@ -483,12 +483,12 @@ button {
 .agents-section {
   margin-top: 1.5rem !important;
   padding: 1.25rem 0 0.5rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 
   .agents-label {
     font-size: 0.75rem;
     font-weight: 450;
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.45);
     margin-bottom: 1rem;
   }
 
@@ -504,19 +504,19 @@ button {
       transition: background 0.15s ease;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.04);
+        background: rgba(255, 255, 255, 0.06);
       }
     }
 
     svg {
       width: 56px;
       height: 56px;
-      color: rgba(0, 0, 0, 0.18);
+      color: rgba(255, 255, 255, 0.25);
       transition: color 0.15s ease;
     }
 
     a:hover svg {
-      color: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.5);
     }
   }
 }
@@ -562,29 +562,29 @@ button {
   font-size: 0.8125rem;
   font-weight: 500;
   border-radius: 0.375rem;
-  background: #111;
-  color: white;
+  background: #e8e8e8;
+  color: #0a0a0b;
   transition: background 0.15s ease;
 
   &:hover {
-    background: #333;
+    background: #d0d0d0;
   }
 
   &.secondary {
-    background: white;
-    color: #111;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+    background: #1a1a1d;
+    color: #e8e8e8;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
     transition: background 0.15s ease, box-shadow 0.15s ease;
 
     &:hover {
-      background: #fafafa;
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+      background: #252528;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
     }
   }
 }
 
 .demo-card {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.04);
   padding: 0.5rem 1rem 0.75rem;
   border-radius: 0.5rem;
 
@@ -596,7 +596,7 @@ button {
 
   p {
     font-size: 0.8125rem;
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.55);
     margin-bottom: 0;
     line-height: 1.5;
   }
@@ -606,17 +606,19 @@ button {
   width: 100%;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #151518;
+  color: #e8e8e8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 0.375rem;
   transition: border-color 0.15s ease;
 
   &:focus {
-    border-color: #3c82f7;
+    border-color: #60a5fa;
     outline: none;
   }
 
   &::placeholder {
-    color: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.35);
   }
 }
 
@@ -629,7 +631,7 @@ button {
 .progress-bar-demo {
   width: 100%;
   height: 4px;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -659,9 +661,9 @@ button {
 
 // Author Credits Block
 .author-credits {
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f3 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-left: 3px solid #4C74FF;
+  background: linear-gradient(135deg, #151518 0%, #1a1a1d 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #60a5fa;
   border-radius: 0.5rem;
   padding: 0.875rem 1rem;
   margin-bottom: 1.5rem;
@@ -669,7 +671,7 @@ button {
   p {
     font-size: 0.8125rem;
     line-height: 1.5;
-    color: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.75);
     margin-bottom: 0.25rem;
 
     &:last-child {
@@ -678,25 +680,25 @@ button {
 
     strong {
       font-weight: 600;
-      color: rgba(0, 0, 0, 0.85);
+      color: rgba(255, 255, 255, 0.9);
     }
 
     a {
-      color: #2480ed;
+      color: #60a5fa;
       text-decoration: underline;
       text-underline-offset: 2px;
-      text-decoration-color: rgba(36, 128, 237, 0.3);
+      text-decoration-color: rgba(96, 165, 250, 0.4);
       transition: text-decoration-color 0.15s ease;
 
       &:hover {
-        text-decoration-color: rgba(36, 128, 237, 0.8);
+        text-decoration-color: rgba(96, 165, 250, 0.8);
       }
     }
   }
 
   .author-credits-links {
     font-size: 0.75rem;
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.5);
   }
 }
 
@@ -705,18 +707,18 @@ button {
   max-width: 36rem;
   margin: 0 auto;
   padding: 1rem 1.5rem 3rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   text-align: left;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.75rem;
 
   a {
-    color: rgba(0, 0, 0, 0.5);
+    color: #60a5fa;
     text-decoration: underline;
     text-underline-offset: 2px;
 
     &:hover {
-      color: rgba(0, 0, 0, 0.7);
+      color: #93c5fd;
     }
   }
 }
@@ -734,12 +736,12 @@ button {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #f0f1f3 100%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: linear-gradient(135deg, #151518 0%, #1a1a1d 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0.625rem 1rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.01em;
 
   @media (max-width: 900px) {
@@ -790,7 +792,7 @@ button {
       display: block;
       width: 100%;
       height: 1.5px;
-      background: #999;
+      background: #888;
       border-radius: 1px;
       transition: transform 0.2s ease;
       transform-origin: center;
@@ -827,15 +829,15 @@ button {
   .mobile-nav-link {
     font-size: 0.75rem;
     font-variation-settings: 'wght' 450;
-    color: rgba(0, 0, 0, 0.35);
+    color: rgba(255, 255, 255, 0.4);
     transition: color 0.15s ease, font-variation-settings 0.25s ease;
 
     &:hover {
-      color: rgba(0, 0, 0, 0.55);
+      color: rgba(255, 255, 255, 0.65);
     }
 
     &.active {
-      color: rgba(0, 0, 0, 0.8);
+      color: rgba(255, 255, 255, 0.9);
       font-variation-settings: 'wght' 550;
     }
   }
@@ -877,7 +879,7 @@ button {
   align-items: center;
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   min-height: 32px;
 
   & > div:last-child {

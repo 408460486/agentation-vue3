@@ -194,24 +194,24 @@ const needsLineBreak = (index: number) => {
 .colophon-page h1 {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 1.25rem;
 }
 .colophon-content {
   font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.5);
   line-height: 1.8;
 }
 .colophon-content p {
   margin-bottom: 0.5rem;
 }
 .colophon-content a {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .colophon-content a:hover {
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(255, 255, 255, 0.75);
 }
 .colophon-table-wrapper {
   position: relative;
@@ -228,20 +228,20 @@ const needsLineBreak = (index: number) => {
   justify-content: space-between;
   align-items: center;
   padding: 0.3rem 0;
-  border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.12);
 }
 .colophon-row:last-child {
   border-bottom: none;
 }
 .colophon-row-label {
-  color: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.45);
 }
 .colophon-row-value {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
   text-align: right;
 }
 .colophon-row-value a {
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.6);
 }
 .colophon-bunny {
   position: absolute;
@@ -250,7 +250,7 @@ const needsLineBreak = (index: number) => {
   white-space: pre;
   line-height: 1;
   font-size: 0.85rem;
-  color: rgba(0, 0, 0, 1);
+  color: rgba(255, 255, 255, 0.9);
   pointer-events: none;
   z-index: 0;
 }

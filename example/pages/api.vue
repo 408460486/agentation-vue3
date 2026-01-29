@@ -148,7 +148,7 @@ const handleAnnotation = (annotation: Annotation) =&gt; {
   flex-direction: column;
   gap: 0.25rem;
   padding: 0.625rem 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .prop-item:last-child {
   border-bottom: none;
@@ -162,22 +162,22 @@ const handleAnnotation = (annotation: Annotation) =&gt; {
 .prop-name {
   font-size: 0.8125rem;
   font-family: "SF Mono", "SFMono-Regular", ui-monospace, Consolas, monospace;
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(255, 255, 255, 0.85);
 }
 .prop-type {
   font-size: 0.75rem;
   font-family: "SF Mono", "SFMono-Regular", ui-monospace, Consolas, monospace;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.5);
 }
 .prop-default {
   font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.5);
 }
 .prop-desc {
   font-size: 0.8125rem;
   font-weight: 450;
   line-height: 1.5;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.65);
   margin: 0;
 }
 </style>

@@ -32,7 +32,7 @@ const delays = [0.1, 0.4, 0.48, 0.56, 0.64, 0.72, 0.8, 0.88, 0.96, 1.04, 1.12, 1
 const totalTypingTime = delays[delays.length - 1] + 0.2
 
 const bunnyColor = computed(() =>
-  isForensic.value && route.path === '/output' ? '#dc2626' : 'rgba(0, 0, 0, 0.85)'
+  isForensic.value && route.path === '/output' ? '#dc2626' : 'rgba(255, 255, 255, 0.9)'
 )
 
 const isOverview = computed(() => route.path === '/')

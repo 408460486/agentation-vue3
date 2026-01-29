@@ -229,7 +229,7 @@ watch(outputFormat, (newFormat) => {
   gap: 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .format-toggle button {
   padding: 0.5rem 0.75rem;
@@ -238,14 +238,14 @@ watch(outputFormat, (newFormat) => {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.5);
   transition: all 0.15s ease;
 }
 .format-toggle button:hover {
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.08);
 }
 .format-toggle button.active {
-  background: rgba(0, 0, 0, 0.06);
-  color: rgba(0, 0, 0, 0.8);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.9);
 }
 </style>

@@ -277,7 +277,7 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <p style="margin-top: 1rem; font-size: 0.75rem; color: rgba(0,0,0,0.5); white-space: pre-line; line-height: 1.3">
+    <p style="margin-top: 1rem; font-size: 0.75rem; color: rgba(255,255,255,0.5); white-space: pre-line; line-height: 1.3">
       {{ t('computedStyles.caption') }}
     </p>
   </div>

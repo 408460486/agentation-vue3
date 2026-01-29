@@ -280,7 +280,7 @@ const handleToggle = (key: string) => {
   margin-bottom: 0.25rem;
 }
 .faq-item {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .faq-item:last-child {
   border-bottom: none;
@@ -294,22 +294,22 @@ const handleToggle = (key: string) => {
   padding: 0.625rem 0;
   font-size: 0.75rem;
   font-weight: 450;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.55);
   text-align: left;
   cursor: pointer;
   transition: color 0.15s ease;
 }
 .faq-question:hover {
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 .faq-icon {
   flex-shrink: 0;
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.3);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
 }
 .faq-icon.open {
   transform: rotate(180deg);
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 .faq-answer {
   display: grid;
@@ -326,15 +326,15 @@ const handleToggle = (key: string) => {
   padding-bottom: 1rem;
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.55);
 }
 .faq-answer-inner code {
   font-family: "SF Mono", "SFMono-Regular", ui-monospace, Consolas, monospace;
   font-size: 0.75rem;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.08);
   padding: 0.1rem 0.3rem;
   border-radius: 0.25rem;
-  color: rgba(0, 0, 0, 0.65);
+  color: rgba(255, 255, 255, 0.65);
 }
 .faq-link {
   color: #2480ed;

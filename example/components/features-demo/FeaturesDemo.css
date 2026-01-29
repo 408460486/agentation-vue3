@@ -14,8 +14,8 @@
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(0,0,0,0.5);
-  background: rgba(0,0,0,0.04);
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.08);
   border: none;
   border-radius: 16px;
   cursor: pointer;
@@ -24,8 +24,8 @@
 }
 
 .fd-tab:hover {
-  background: rgba(0,0,0,0.08);
-  color: rgba(0,0,0,0.7);
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
 }
 
 .fd-tab.active {
@@ -128,20 +128,20 @@
   font-style: italic;
 }
 
-.demo-quote {
+.demo-window .demo-content .demo-quote {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 12px;
   line-height: 1.7;
-  color: #333;
+  color: #333 !important;
   font-style: italic;
   margin: 10px 0 8px;
   padding: 0 8px;
 }
 
-.demo-quote-author {
+.demo-window .demo-content .demo-quote-author {
   font-family: system-ui, sans-serif;
   font-size: 10px;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(0, 0, 0, 0.45) !important;
   margin: 0;
   padding: 0 8px;
 }
@@ -1497,7 +1497,7 @@
   align-items: center;
   gap: 0.6em;
   padding: 0.5em 0;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 .mkd-list li:last-child {

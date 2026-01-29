@@ -88,6 +88,8 @@ npm version major  # 1.0.0 → 2.0.0 (breaking changes / 破坏性变更)
 ```bash
 # 编辑 CHANGELOG_EN.md 和 CHANGELOG_CN.md，将 [Unreleased] 内容移到新版本下
 # 格式: ## [x.y.z] - YYYY-MM-DD
+# 注意：更新日志只记录 src/ 目录下的库代码变更，不包含 example/ 目录的变更
+# Note: Changelog only records library code changes in src/, excluding example/ directory changes
 ```
 
 #### 4 Sync changelog page / 同步更新日志页面

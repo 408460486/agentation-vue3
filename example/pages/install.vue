@@ -55,7 +55,7 @@ const copyToClipboard = async (text: string, key: string) => {
               border: 'none',
               borderRadius: '0.25rem',
               cursor: 'pointer',
-              color: copiedStates['install'] ? '#22c55e' : 'rgba(0,0,0,0.35)',
+              color: copiedStates['install'] ? '#22c55e' : 'rgba(255,255,255,0.45)',
               transition: 'color 0.15s ease',
               display: 'flex',
               alignItems: 'center',
@@ -71,7 +71,7 @@ const copyToClipboard = async (text: string, key: string) => {
             </svg>
           </button>
         </div>
-        <p style="font-size: 0.875rem; color: rgba(0,0,0,0.5); margin-top: 0.5rem">
+        <p style="font-size: 0.875rem; color: rgba(255,255,255,0.55); margin-top: 0.5rem">
           {{ t('install.orUse') }}
         </p>
       </section>
@@ -111,7 +111,7 @@ import { Agentation } from "agentation-vue3";
   &lt;/NuxtLayout&gt;
   &lt;Agentation /&gt;
 &lt;/template&gt;</pre>
-        <p style="font-size: 0.875rem; color: rgba(0,0,0,0.5); margin-top: 0.5rem">
+        <p style="font-size: 0.875rem; color: rgba(255,255,255,0.55); margin-top: 0.5rem">
           {{ t('install.nuxt3Css') }}<code>nuxt.config.ts</code>:
         </p>
         <pre class="code-block">export default defineNuxtConfig({
