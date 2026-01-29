@@ -8,6 +8,12 @@ export default defineNuxtConfig({
 
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
+    head: {
+      title: 'Agentation Vue 3 Example',
+      htmlAttrs: {
+        lang: 'en',
+      },
+    },
   },
 
   devServer: {
