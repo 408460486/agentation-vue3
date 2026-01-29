@@ -92,19 +92,27 @@ npm version major  # 1.0.0 → 2.0.0 (breaking changes / 破坏性变更)
 # 文件位置: vue3/example/pages/changelog.vue
 ```
 
-#### 3. Commit and push / 提交并推送
+#### 3. Regenerate example lockfile / 重新生成示例项目锁文件
 ```bash
-git add package.json CHANGELOG_EN.md CHANGELOG_CN.md
-git commit -m "chore: bump version to x.y.z"
+cd vue3/example
+rm -f pnpm-lock.yaml
+pnpm install
+cd ..
+```
+
+#### 4. Commit and push / 提交并推送
+```bash
+git add package.json CHANGELOG_EN.md CHANGELOG_CN.md example/pnpm-lock.yaml
+git commit -m "chore: release vx.y.z"
 git push
 ```
 
-#### 4. Create GitHub Release / 创建 GitHub Release
+#### 5. Create GitHub Release / 创建 GitHub Release
 ```bash
 gh release create vX.Y.Z --title "vX.Y.Z" --notes "Release notes here"
 ```
 
-#### 4. Automatic npm publish / 自动发布到 npm
+#### 6. Automatic npm publish / 自动发布到 npm
 - GitHub Actions 会自动触发 `Publish to npm` 工作流
 - 工作流会构建项目并发布到 npm
 - 可通过以下命令查看状态:
