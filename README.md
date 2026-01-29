@@ -131,7 +131,7 @@ Agentation captures class names, selectors, and element positions so AI agents c
 
 ### Docs
 
-Full documentation at [agentation.dev](https://agentation-vue3.starpipi.eu.org/)
+Full documentation at [https://agentation-vue3.starpipi.eu.org/](https://agentation-vue3.starpipi.eu.org/)
 
 ---
 
