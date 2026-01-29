@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-01-29
+
+### Fixed
+- Fixed pathname not updating on SPA page navigation, causing Page Feedback to show incorrect path after switching pages
+
 ## [1.0.2] - 2025-01-29
 
 ### Fixed

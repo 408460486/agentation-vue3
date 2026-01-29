@@ -34,6 +34,13 @@ const releases = computed<Release[]>(() => {
   if (locale.value === 'zh') {
     return [
       {
+        version: '1.0.3',
+        date: '2025-01-29',
+        changes: [
+          { type: 'fixed', text: '修复 SPA 页面切换后 pathname 不更新的问题，导致 Page Feedback 显示错误路径' },
+        ],
+      },
+      {
         version: '1.0.2',
         date: '2025-01-29',
         changes: [
@@ -70,6 +77,13 @@ const releases = computed<Release[]>(() => {
   }
   // English (default)
   return [
+    {
+      version: '1.0.3',
+      date: '2025-01-29',
+      changes: [
+        { type: 'fixed', text: 'Fixed pathname not updating on SPA page navigation, causing Page Feedback to show incorrect path after switching pages' },
+      ],
+    },
     {
       version: '1.0.2',
       date: '2025-01-29',

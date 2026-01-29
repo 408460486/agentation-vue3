@@ -234,8 +234,14 @@ let justFinishedDragSelection = false
 const popupRef = ref<InstanceType<typeof AnnotationPopup> | null>(null)
 const editPopupRef = ref<InstanceType<typeof AnnotationPopup> | null>(null)
 
-// Computed
-const pathname = typeof window !== 'undefined' ? window.location.pathname : '/'
+// Reactive pathname - updates on SPA navigation
+const pathname = ref(typeof window !== 'undefined' ? window.location.pathname : '/')
+
+// Update pathname on popstate (browser back/forward) and listen for route changes
+const updatePathname = () => {
+  pathname.value = window.location.pathname
+}
+
 
 const hasAnnotations = computed(() => annotations.value.length > 0)
 
@@ -810,7 +816,7 @@ const constrainToolbarPosition = () => {
 
 const handleCopy = async () => {
   if (justFinishedToolbarDrag) return
-  const output = generateOutput(annotations.value, pathname, settings.value.outputDetail)
+  const output = generateOutput(annotations.value, pathname.value, settings.value.outputDetail)
   if (!output) return
 
   if (props.copyToClipboard) {
@@ -840,7 +846,7 @@ const handleCopy = async () => {
       if (settings.value.autoClearAfterCopy) {
         const clearedAnnotations = [...annotations.value]
         annotations.value = []
-        localStorage.removeItem(getStorageKey(pathname))
+        localStorage.removeItem(getStorageKey(pathname.value))
         emit('annotationsClear', clearedAnnotations)
       }
     } catch (e) {
@@ -857,7 +863,7 @@ const handleClearAll = () => {
 
   const clearedAnnotations = [...annotations.value]
   annotations.value = []
-  localStorage.removeItem(getStorageKey(pathname))
+  localStorage.removeItem(getStorageKey(pathname.value))
 
   cleared.value = true
   setTimeout(() => {
@@ -1226,7 +1232,7 @@ onMounted(() => {
   scrollY.value = window.scrollY
 
   // Load annotations
-  const stored = loadAnnotations<Annotation>(pathname)
+  const stored = loadAnnotations<Annotation>(pathname.value)
   annotations.value = stored
 
   // Entrance animation
@@ -1264,6 +1270,19 @@ onMounted(() => {
   document.addEventListener('keydown', handleKeyDown)
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('resize', constrainToolbarPosition)
+  window.addEventListener('popstate', updatePathname)
+
+  // Listen for SPA navigation (pushState/replaceState)
+  const originalPushState = history.pushState.bind(history)
+  const originalReplaceState = history.replaceState.bind(history)
+  history.pushState = (...args) => {
+    originalPushState(...args)
+    updatePathname()
+  }
+  history.replaceState = (...args) => {
+    originalReplaceState(...args)
+    updatePathname()
+  }
 
   // Multi-select event listeners (without capture phase like React)
   document.addEventListener('mousedown', handleSelectionMouseDown)
@@ -1282,6 +1301,7 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', constrainToolbarPosition)
+  window.removeEventListener('popstate', updatePathname)
 
   // Remove multi-select event listeners
   document.removeEventListener('mousedown', handleSelectionMouseDown)
@@ -1328,9 +1348,9 @@ watch(isActive, (active) => {
 // Save annotations
 watch(annotations, (newAnnotations) => {
   if (mounted.value && newAnnotations.length > 0) {
-    saveAnnotations(pathname, newAnnotations)
+    saveAnnotations(pathname.value, newAnnotations)
   } else if (mounted.value && newAnnotations.length === 0) {
-    localStorage.removeItem(getStorageKey(pathname))
+    localStorage.removeItem(getStorageKey(pathname.value))
   }
 }, { deep: true })
 
