@@ -102,7 +102,7 @@ npm version major  # 1.0.0 → 2.0.0 (breaking changes / 破坏性变更)
 
 #### 5. Regenerate example lockfile / 重新生成示例项目锁文件
 ```bash
-cd vue3/example
+cd example
 rm -f pnpm-lock.yaml
 pnpm install
 cd ..
