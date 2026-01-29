@@ -16,6 +16,6 @@
     "wrangler": "^3.0.0"
   },
   "dependencies": {
-    "agentation-vue3": "latest"
+    "agentation-vue3": "^1.0.0"
   }
 }
