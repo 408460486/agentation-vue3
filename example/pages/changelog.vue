@@ -155,7 +155,7 @@ const changeTypes: ChangeType[] = ['fixed', 'improved', 'added', 'removed']
           >
             {{ release.version }}
           </a>
-          <span style="font-weight: 400; color: rgba(0, 0, 0, 0.35); margin-left: 0">
+          <span class="release-date">
             {{ release.date }}
           </span>
         </h2>
@@ -165,7 +165,7 @@ const changeTypes: ChangeType[] = ['fixed', 'improved', 'added', 'removed']
         <div v-if="release.changes && release.changes.length > 0" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem">
           <template v-for="type in changeTypes" :key="type">
             <div v-if="release.changes!.filter(c => c.type === type).length > 0">
-              <div style="font-size: 0.6875rem; font-weight: 500; color: rgba(0, 0, 0, 0.4); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem">
+              <div class="change-type-label">
                 {{ getBadgeLabel(type) }}
               </div>
               <ul>
@@ -187,3 +187,31 @@ const changeTypes: ChangeType[] = ['fixed', 'improved', 'added', 'removed']
     <Footer />
   </div>
 </template>
+
+<style scoped>
+.release-date {
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.35);
+  margin-left: 0;
+}
+
+.change-type-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .release-date {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .change-type-label {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+</style>
