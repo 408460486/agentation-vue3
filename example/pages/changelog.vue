@@ -34,6 +34,13 @@ const releases = computed<Release[]>(() => {
   if (locale.value === 'zh') {
     return [
       {
+        version: '1.0.4',
+        date: '2025-01-30',
+        changes: [
+          { type: 'fixed', text: '修复 hash 路由模式下 pathname 不更新的问题，新增 hashchange 事件监听' },
+        ],
+      },
+      {
         version: '1.0.3',
         date: '2025-01-29',
         changes: [
@@ -77,6 +84,13 @@ const releases = computed<Release[]>(() => {
   }
   // English (default)
   return [
+    {
+      version: '1.0.4',
+      date: '2025-01-30',
+      changes: [
+        { type: 'fixed', text: 'Fixed pathname not updating in hash router mode, added hashchange event listener' },
+      ],
+    },
     {
       version: '1.0.3',
       date: '2025-01-29',

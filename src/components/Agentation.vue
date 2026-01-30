@@ -234,12 +234,25 @@ let justFinishedDragSelection = false
 const popupRef = ref<InstanceType<typeof AnnotationPopup> | null>(null)
 const editPopupRef = ref<InstanceType<typeof AnnotationPopup> | null>(null)
 
+// Get current path - supports both hash and history router modes
+// 获取当前路径 - 同时支持 hash 和 history 路由模式
+const getCurrentPath = () => {
+  if (typeof window === 'undefined') return '/'
+  const hash = window.location.hash
+  // Hash mode: #/path or #!/path
+  if (hash && hash.startsWith('#')) {
+    return hash.replace(/^#!?/, '') || '/'
+  }
+  // History mode: use pathname
+  return window.location.pathname
+}
+
 // Reactive pathname - updates on SPA navigation
-const pathname = ref(typeof window !== 'undefined' ? window.location.pathname : '/')
+const pathname = ref(getCurrentPath())
 
 // Update pathname on popstate (browser back/forward) and listen for route changes
 const updatePathname = () => {
-  pathname.value = window.location.pathname
+  pathname.value = getCurrentPath()
 }
 
 
@@ -1271,6 +1284,7 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
   window.addEventListener('resize', constrainToolbarPosition)
   window.addEventListener('popstate', updatePathname)
+  window.addEventListener('hashchange', updatePathname)
 
   // Listen for SPA navigation (pushState/replaceState)
   const originalPushState = history.pushState.bind(history)
@@ -1302,6 +1316,7 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', constrainToolbarPosition)
   window.removeEventListener('popstate', updatePathname)
+  window.removeEventListener('hashchange', updatePathname)
 
   // Remove multi-select event listeners
   document.removeEventListener('mousedown', handleSelectionMouseDown)

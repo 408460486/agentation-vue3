@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2025-01-30
+
+### Fixed
+- Fixed pathname not updating in hash router mode, added `hashchange` event listener
+
 ## [1.0.3] - 2025-01-29
 
 ### Fixed
