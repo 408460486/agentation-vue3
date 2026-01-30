@@ -6,9 +6,13 @@
 
 ## 中文
 
-> **作者 [binyy](https://github.com/408460486)** | [官方地址](https://agentation-vue3.starpipi.eu.org)，基于 [Benji Taylor](https://x.com/benjitaylor)、[Dennis Jin](https://x.com/seldom) 和 [Alex Vanderzon](https://x.com/alexvanderzon) 的 React 版本
+> **作者 [Binyy](https://github.com/408460486)**，基于 [Benji Taylor](https://x.com/benjitaylor)、[Dennis Jin](https://x.com/seldom) 和 [Alex Vanderzon](https://x.com/alexvanderzon) 的 React 版本
 >
-> 原始 React 版本：[GitHub](https://github.com/benjitaylor/agentation) · [NPM](https://www.npmjs.com/package/agentation)
+> React版本：[GitHub](https://github.com/benjitaylor/agentation) · [NPM](https://www.npmjs.com/package/agentation) · [EXAMPLE](https://agentation.dev/)
+>
+> Vue3版本：[GitHub](https://github.com/408460486/agentation-vue3) · [NPM](https://www.npmjs.com/package/agentation-vue3) · [EXAMPLE](https://agentation-vue3.starpipi.eu.org/)
+>
+> Vue2版本：[GitHub](https://github.com/408460486/agentation-vue3) · [NPM](https://www.npmjs.com/package/agentation-vue2) · [EXAMPLE](https://agentation-vue2.starpipi.eu.org/)
 
 Agentation 是一个与 AI 工具无关的 Vue 3 可视化反馈工具。点击页面上的元素，添加注释，然后复制结构化输出，帮助 AI 编程助手找到您所指的确切代码。
 
@@ -66,7 +70,7 @@ Agentation 捕获类名、选择器和元素位置，以便 AI 助手可以 `gre
 
 ### 文档
 
-完整文档请访问 [https://agentation-vue3.starpipi.eu.org/](https://agentation-vue3.starpipi.eu.org/)
+完整文档请访问 [https://agentation-vue3.starpipi.eu.org](https://agentation-vue2.starpipi.eu.org/)
 
 ---
 
